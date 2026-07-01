@@ -1,0 +1,33 @@
+.wrapper {
+    padding: 0 1.25rem 0.75rem;
+}
+
+.group {
+    display: flex;
+    background-color: #f3f4f6;
+    border-radius: 9999px;
+    padding: 0.25rem;
+}
+
+.tab {
+    flex: 1;
+    padding: 0.625rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: transparent;
+    color: #6b7280;
+}
+
+.tab:hover {
+    color: #374151;
+}
+
+.tabActive {
+    background: white;
+    color: #111827;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}

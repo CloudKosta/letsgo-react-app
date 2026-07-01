@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './Header';
 import Navbar from './NavBar';
-import MySchedulePage from '../../screens/mySchedule/MyScheduleList';
+import MyScheduleList from '../../screens/mySchedule/MyScheduleList';
 
 function PhoneLayout() {
     return (
@@ -11,7 +11,7 @@ function PhoneLayout() {
 
                 <main className="flex-1 overflow-y-auto mt-16 mb-16 bg-gray-50">
                     <Routes>
-                        <Route path="/mySchedule" element={<MySchedulePage />} />
+                        <Route path="/mySchedule" element={<MyScheduleList />} />
                     </Routes>
                 </main>
 
