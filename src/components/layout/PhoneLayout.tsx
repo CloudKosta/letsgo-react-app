@@ -1,17 +1,23 @@
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './Header';
 import Navbar from './NavBar';
+import MySchedulePage from '../../screens/mySchedule/MyScheduleList';
 
 function PhoneLayout() {
     return (
-        <div>
-            <Header />
+        <BrowserRouter>
+            <div className="flex flex-col h-screen">
+                <Header />
 
-            <BrowserRouter>
+                <main className="flex-1 overflow-y-auto mt-16 mb-16 bg-gray-50">
+                    <Routes>
+                        <Route path="/mySchedule" element={<MySchedulePage />} />
+                    </Routes>
+                </main>
+
                 <Navbar />
-            </BrowserRouter>
-
-        </div>
+            </div>
+        </BrowserRouter>
     );
 }
 
