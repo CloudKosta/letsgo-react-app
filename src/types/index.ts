@@ -3,7 +3,7 @@ export interface MySchedule {
     myScheduleTitle: string;
     startAt: string;
     placeCount: number;
-    tags: string[];
+    placeTitle: string[];
     isShared: boolean;
 }
 
@@ -17,7 +17,7 @@ export interface MyScheduleDetail {
     visitOrder: string;
     placeId: string;
     title: string;
-    distanceToNext: DoubleRange;
+    distanceToNext: number;
     scheduleType: string;
 }
 
