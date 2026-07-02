@@ -19,8 +19,8 @@ function MyScheduleList() {
 
     const sorted = [...filtered].sort((a, b) => {
         let cmp = 0;
-        if (activeSort.field === 'date') cmp = a.date.localeCompare(b.date);
-        else if (activeSort.field === 'name') cmp = a.title.localeCompare(b.title);
+        if (activeSort.field === 'date') cmp = a.startAt.localeCompare(b.startAt);
+        else if (activeSort.field === 'name') cmp = a.myScheduleTitle.localeCompare(b.myScheduleTitle);
         return activeSort.asc ? cmp : -cmp;
     });
 
@@ -38,7 +38,7 @@ function MyScheduleList() {
 
             <div className={styles.list}>
                 {sorted.map((schedule) => (
-                    <ScheduleCard key={schedule.id} schedule={schedule} />
+                    <ScheduleCard key={schedule.myScheduleId} schedule={schedule} />
                 ))}
 
                 {sorted.length === 0 && (

@@ -1,4 +1,5 @@
 import { Calendar, MapPin, Share2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { Schedule } from '../../../data/mockSchedules';
 import styles from './ScheduleCard.module.css';
 
@@ -7,8 +8,14 @@ interface ScheduleCardProps {
 }
 
 function ScheduleCard({ schedule }: ScheduleCardProps) {
+    const navigate = useNavigate();
+
     return (
-        <div className={styles.card}>
+        <div
+            className={styles.card}
+            onClick={() => navigate(`/mySchedule/${schedule.id}`)}
+            style={{ cursor: 'pointer' }}
+        >
             <div className={styles.header}>
                 <h3 className={styles.title}>{schedule.title}</h3>
                 {schedule.isShared && (
@@ -42,3 +49,4 @@ function ScheduleCard({ schedule }: ScheduleCardProps) {
 }
 
 export default ScheduleCard;
+

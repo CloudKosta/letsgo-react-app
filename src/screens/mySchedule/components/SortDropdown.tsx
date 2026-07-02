@@ -10,10 +10,10 @@ export interface SortOption {
 }
 
 export const sortOptions: SortOption[] = [
-    { key: 'date-desc', label: '날짜 내림차순', field: 'date', asc: false },
-    { key: 'date-asc', label: '날짜 오름차순', field: 'date', asc: true },
-    { key: 'name-desc', label: '제목 내림차순', field: 'name', asc: false },
-    { key: 'name-asc', label: '제목 오름차순', field: 'name', asc: true },
+    { key: 'date-desc', label: '날짜 ↓', field: 'date', asc: false },
+    { key: 'date-asc', label: '날짜 ↑', field: 'date', asc: true },
+    { key: 'name-desc', label: '제목 ↓', field: 'name', asc: false },
+    { key: 'name-asc', label: '제목 ↑', field: 'name', asc: true },
 ];
 
 interface SortDropdownProps {
