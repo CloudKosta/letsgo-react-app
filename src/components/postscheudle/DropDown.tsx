@@ -16,7 +16,7 @@ export default function DropDown(){
 
     return(
         <div>
-            <button onClick={() => setIsOpen((prev) => !prev)} className= "border border-black rounded"> {sortType}
+            <button onClick={() => setIsOpen((prev) => !prev)} className= "flex items-center justify-between w-26 px-4 py-2 bg-white rounded-2xl shadow text-sm font-bold text-gray-700  transition-all hover:bg-gray-50"> {sortType}
                 <span>
                     {isOpen ? '▲' : '▼'}
                 </span>
@@ -26,7 +26,7 @@ export default function DropDown(){
         <ul>
           {SORT_OPTIONS.map((option) => (
             <li key={option}>
-              <button onClick={() => handleSelect(option)} className= "border border-black rounded"> {option} </button>
+              <button onClick={() => handleSelect(option)} className= "flex items-center justify-between w-22 px-4 py-2 bg-white rounded-2xl shadow text-sm font-bold text-gray-700  transition-all hover:bg-gray-50"> {option} </button>
             </li>))}
         </ul>)}
     </div>
