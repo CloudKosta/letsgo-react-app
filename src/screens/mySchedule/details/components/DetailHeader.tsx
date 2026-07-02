@@ -1,0 +1,27 @@
+import { ArrowLeft, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import type { MySchedule } from '../../../../types';
+
+interface DetailHeaderProps {
+    schedule?: MySchedule;
+}
+
+function DetailHeader({ schedule }: DetailHeaderProps) {
+    const navigate = useNavigate();
+
+    return (
+        <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 px-4 flex items-center justify-between z-50">
+            <div className="flex items-center gap-2">
+                <button onClick={() => navigate('/mySchedule')}>
+                    <ArrowLeft size={24} />
+                </button>
+                <h1 className="font-bold text-lg">{schedule?.myScheduleTitle ?? ''}</h1>
+            </div>
+            <button>
+                <Trash2 size={20} />
+            </button>
+        </header>
+    );
+}
+
+export default DetailHeader;

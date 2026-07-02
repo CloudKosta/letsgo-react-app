@@ -1,0 +1,41 @@
+@reference "tailwindcss";
+
+.page {
+    @apply flex flex-col min-h-0 flex-1;
+}
+
+.titleBar {
+    @apply px-5 pt-5 pb-3 flex items-center justify-between;
+}
+
+.title {
+    @apply text-2xl font-bold text-gray-900 tracking-tight;
+}
+
+.profileBtn {
+    @apply w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_4px_12px_rgba(59,130,246,0.25)] border-none cursor-pointer transition-transform duration-200;
+}
+
+.profileBtn:hover {
+    @apply scale-105;
+}
+
+.profileIcon {
+    @apply w-5 h-5 text-white;
+}
+
+.list {
+    @apply flex-1 overflow-y-auto px-5 pb-4 flex flex-col gap-3;
+}
+
+.emptyState {
+    @apply flex flex-col items-center justify-center py-16 text-gray-400;
+}
+
+.emptyIcon {
+    @apply w-12 h-12 mb-3 opacity-50;
+}
+
+.emptyText {
+    @apply text-sm font-medium;
+}
