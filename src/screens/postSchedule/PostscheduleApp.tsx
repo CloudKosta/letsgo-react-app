@@ -1,16 +1,16 @@
 import DropDown from "./components/DropDown";
-import { TabButton } from "./components/TabButton";
-import PostScheduleDetail from "./PostScheduleDetail";
+import PostScheduleCard from "./components/PostScheduleCard";
+import {TabButton} from "./components/TabButton";
 
 
 
 
-export default function Main() {
+export default function PostScheduleApp() {
   return (
     <div>
       <DropDown />
       <TabButton />
-      <PostScheduleDetail />
+      <PostScheduleCard />
     </div>
   );
 }
