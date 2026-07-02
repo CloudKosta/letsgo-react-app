@@ -1,7 +1,7 @@
 import { Calendar, MapPin, Share2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { MySchedule } from '../../../types';
-import styles from './ScheduleCard.module.css';
+import styles from './css/ScheduleCard.module.css';
 
 interface ScheduleCardProps {
     schedule: MySchedule;

@@ -1,4 +1,4 @@
-import styles from './DetailTab.module.css';
+import styles from './css/DetailTab.module.css';
 
 type DetailTabType = 'schedule' | 'budget' | 'todo' | 'share';
 

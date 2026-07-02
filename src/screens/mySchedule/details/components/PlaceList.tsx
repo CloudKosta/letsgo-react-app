@@ -1,6 +1,6 @@
 import { GripVertical, Plus } from 'lucide-react';
 import type { MyScheduleDetail } from '../../../../types';
-import styles from './PlaceList.module.css';
+import styles from './css/PlaceList.module.css';
 
 interface PlaceListProps {
     places: MyScheduleDetail[];

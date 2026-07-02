@@ -21,3 +21,9 @@ export interface MyScheduleDetail {
     scheduleType: string;
 }
 
+export interface Colleague {
+    userId: string;
+    name: string;
+    email: string;
+    permission: string;
+}

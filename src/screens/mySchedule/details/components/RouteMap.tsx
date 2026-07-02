@@ -1,11 +1,10 @@
 import type { MyScheduleDetail } from '../../../../types';
-import styles from './RouteMap.module.css';
+import styles from './css/RouteMap.module.css';
 
 interface RouteMapProps {
     places: MyScheduleDetail[];
 }
 
-// 장소 마커를 지도 위에 흩뿌린 듯한 좌표(0~100 비율)
 const positions = [
     { x: 22, y: 28 },
     { x: 70, y: 42 },
@@ -27,7 +26,6 @@ function RouteMap({ places }: RouteMapProps) {
     return (
         <div className={styles.map}>
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={styles.svg}>
-                {/* 점선 경로 */}
                 {points.slice(0, -1).map((p, i) => {
                     const next = points[i + 1];
                     return (
@@ -43,7 +41,6 @@ function RouteMap({ places }: RouteMapProps) {
                 })}
             </svg>
 
-            {/* 장소 마커 */}
             {points.map((p, i) => (
                 <div
                     key={`marker-${i}`}
@@ -54,7 +51,6 @@ function RouteMap({ places }: RouteMapProps) {
                 </div>
             ))}
 
-            {/* 구간 거리 라벨 */}
             {points.slice(0, -1).map((p, i) => {
                 const next = points[i + 1];
                 const distance = places[i].distanceToNext;
