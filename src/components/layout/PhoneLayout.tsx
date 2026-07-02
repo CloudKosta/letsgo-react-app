@@ -9,14 +9,11 @@ import ChatBot from '../../screens/chatBot/ChatBot';
 function PhoneLayoutContent() {
     const location = useLocation();
 
-    const hideDefaultHeader =
-        location.pathname.startsWith('/cart') ||
-        location.pathname.startsWith('/chat') ||
-        /^\/mySchedule\/\d+/.test(location.pathname);
+
 
     return (
         <div className="flex flex-col h-screen">
-            {!hideDefaultHeader && <Header />}
+            <Header />
 
             <main className="flex-1 overflow-y-auto mt-16 mb-16 bg-gray-50">
                 <Routes>
