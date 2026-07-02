@@ -1,6 +1,7 @@
-import DropDown from "./DropDown";
+import DropDown from "./components/DropDown";
+import { TabButton } from "./components/TabButton";
 import PostScheduleDetail from "./PostScheduleDetail";
-import { TabButton } from "./TabButton";
+
 
 
 
