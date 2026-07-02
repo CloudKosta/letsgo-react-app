@@ -1,8 +1,9 @@
 import { Send } from "lucide-react";
+import ChatBotHeader from "./ChatBotHeader";
 export default function ChatBot() {
     return (
         <div className="flex flex-col w-[332px] mx-auto h-[calc(100vh-64px)] bg-gray-50">
-
+            <ChatBotHeader />
             <div className="flex-grow overflow-y-auto p-4">
 
             </div>
