@@ -1,15 +1,26 @@
-import { X } from "lucide-react";
+import { useState } from "react";
+import { X, ImageOff } from "lucide-react";
 import './CartItem.css';
 
 export default function CartItem() {
+    const [imageError, setImageError] = useState(false);
+
     return (
         <div className="cart-item-container">
             <div className="cart-item-image-wrapper">
-                <img
-                    src="/bbangee.jpeg"
-                    alt="빵빵이"
-                    className="cart-item-image"
-                />
+                {!imageError ? (
+                    <img
+                        src="/bbangee.jpeg"
+                        alt="빵빵이"
+                        className="cart-item-image"
+                        onError={() => setImageError(true)}
+                    />
+                ) : (
+                    <div className="cart-item-no-image">
+                        <ImageOff className="w-5 h-5 text-gray-300 mb-1" />
+                        <span>사진 없음</span>
+                    </div>
+                )}
             </div>
 
             <div className="cart-item-info-container">
