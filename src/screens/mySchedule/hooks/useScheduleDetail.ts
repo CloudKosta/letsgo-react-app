@@ -1,15 +1,11 @@
-import { useEffect, useState } from "react";
-import { api } from "../../../api/axiosInstance";
+import { useCallback, useEffect, useState } from "react";
+import { getScheduleDetail } from "../../../api/myScheduleApi";
 import type { ScheduleDetailInfo, RouteSchedule } from "../../../types";
-
-interface ScheduleDetailResponse {
-  schedule: ScheduleDetailInfo;
-  route: RouteSchedule[];
-}
 
 export function useScheduleDetail(scheduleId?: number) {
   const [info, setInfo] = useState<ScheduleDetailInfo | null>(null);
   const [route, setRoute] = useState<RouteSchedule[]>([]);
+  const [permission, setPermission] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,10 +18,11 @@ export function useScheduleDetail(scheduleId?: number) {
       setLoading(true);
       setError(null);
       try {
-        const res = await api.get<ScheduleDetailResponse>(`/myschedule/api/${scheduleId}/detail`);
+        const data = await getScheduleDetail(scheduleId!);
         if (!ignore) {
-          setInfo(res.data.schedule);
-          setRoute(res.data.route);
+          setInfo(data.schedule);
+          setRoute(data.route);
+          setPermission(data.permission);
         }
       } catch {
         if (!ignore) setError("일정을 불러오지 못했습니다.");
@@ -41,5 +38,9 @@ export function useScheduleDetail(scheduleId?: number) {
     };
   }, [scheduleId]);
 
-  return { info, route, loading, error };
+  const patchInfo = useCallback((partial: Partial<ScheduleDetailInfo>) => {
+    setInfo((prev) => (prev ? { ...prev, ...partial } : prev));
+  }, []);
+
+  return { info, route, permission, loading, error, patchInfo };
 }

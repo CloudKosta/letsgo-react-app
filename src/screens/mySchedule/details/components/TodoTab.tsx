@@ -21,12 +21,14 @@ import styles from './css/TodoTab.module.css';
 interface TodoTabProps {
     initialContent?: string;
     onSave?: (content: string) => Promise<void> | void;
+    readOnly?: boolean;
 }
 
-function TodoTab({ initialContent = '', onSave }: TodoTabProps) {
+function TodoTab({ initialContent = '', onSave, readOnly = false }: TodoTabProps) {
     const editor = useEditor({
         extensions: [StarterKit],
         content: initialContent,
+        editable: !readOnly,
     });
 
     const [saving, setSaving] = useState(false);

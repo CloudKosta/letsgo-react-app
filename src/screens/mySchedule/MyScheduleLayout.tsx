@@ -8,7 +8,7 @@ function MyScheduleLayout() {
     const match = useMatch('/mySchedule/:id');
     const scheduleId = match ? Number(match.params.id) : undefined;
 
-    const { info, route, loading, error } = useScheduleDetail(scheduleId);
+    const { info, route, permission, loading, error, patchInfo } = useScheduleDetail(scheduleId);
 
     return (
         <>
@@ -22,8 +22,10 @@ function MyScheduleLayout() {
                             scheduleId={scheduleId}
                             info={info}
                             route={route}
+                            permission={permission}
                             loading={loading}
                             error={error}
+                            patchInfo={patchInfo}
                         />
                     }
                 />

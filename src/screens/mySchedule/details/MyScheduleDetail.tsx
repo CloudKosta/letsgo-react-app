@@ -10,19 +10,22 @@ import PlaceList from './components/PlaceList';
 import ShareTab from './components/ShareTab';
 import TodoTab from './components/TodoTab';
 import BudgetTab from './components/BudgetTab';
-import { updateTodo, updateBudget, updateStartAt, deleteSchedule } from '../../../api/myScheduleApi';
+import { useScheduleMutations } from '../hooks/useScheduleMutations';
 import styles from './MyScheduleDetail.module.css';
 
 interface MyScheduleDetailProps {
     scheduleId?: number;
     info?: ScheduleDetailInfo | null;
     route?: RouteSchedule[];
+    permission?: string | null;
     loading?: boolean;
     error?: string | null;
+    patchInfo?: (partial: Partial<ScheduleDetailInfo>) => void;
 }
 
-function MyScheduleDetail({ scheduleId, info, route = [], loading, error }: MyScheduleDetailProps) {
+function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, error, patchInfo }: MyScheduleDetailProps) {
     const navigate = useNavigate();
+    const { saveTodo, saveBudget, saveStartAt, removeSchedule } = useScheduleMutations(scheduleId);
     const [activeTab, setActiveTab] = useState<DetailTabType>('schedule');
     const [date, setDate] = useState('');
 
@@ -40,10 +43,14 @@ function MyScheduleDetail({ scheduleId, info, route = [], loading, error }: MySc
         return <div className={styles.notFound}>일정을 찾을 수 없습니다.</div>;
     }
 
+    const isOwner = permission === 'OWNER';
+    const canEdit = isOwner || permission === 'W';
+
     const handleDateChange = async (next: string) => {
         setDate(next);
         try {
-            await updateStartAt(scheduleId, next);
+            await saveStartAt(next);
+            patchInfo?.({ startAt: next });
         } catch (err) {
             alert(err instanceof Error ? err.message : '날짜 저장에 실패했습니다.');
         }
@@ -51,7 +58,8 @@ function MyScheduleDetail({ scheduleId, info, route = [], loading, error }: MySc
 
     const handleSaveTodo = async (content: string) => {
         try {
-            await updateTodo(scheduleId, content);
+            await saveTodo(content);
+            patchInfo?.({ todoDetail: content });
             alert('할 일이 저장되었습니다.');
         } catch (err) {
             alert(err instanceof Error ? err.message : '할 일 저장에 실패했습니다.');
@@ -60,7 +68,8 @@ function MyScheduleDetail({ scheduleId, info, route = [], loading, error }: MySc
 
     const handleSaveBudget = async (content: string) => {
         try {
-            await updateBudget(scheduleId, content);
+            await saveBudget(content);
+            patchInfo?.({ budgetDetail: content });
             alert('예산이 저장되었습니다.');
         } catch (err) {
             alert(err instanceof Error ? err.message : '예산 저장에 실패했습니다.');
@@ -70,7 +79,7 @@ function MyScheduleDetail({ scheduleId, info, route = [], loading, error }: MySc
     const handleDelete = async () => {
         if (!window.confirm('이 일정을 삭제할까요?')) return;
         try {
-            const ok = await deleteSchedule(scheduleId);
+            const ok = await removeSchedule();
             if (ok) {
                 navigate('/mySchedule');
             } else {
@@ -83,12 +92,26 @@ function MyScheduleDetail({ scheduleId, info, route = [], loading, error }: MySc
 
     return (
         <div className={styles.page}>
+            {!isOwner && (
+                <div
+                    className={`mx-1 mb-3 px-4 py-2.5 rounded-2xl text-[13px] font-medium ${
+                        canEdit
+                            ? 'bg-[#e7f5ff] text-[#1c7ed6] border border-[#a5d8ff]'
+                            : 'bg-[#f8f9fa] text-[#868e96] border border-[#e9ecef]'
+                    }`}
+                >
+                    {canEdit ? '공유받은 일정 · 편집 가능' : '공유받은 일정 · 읽기 전용'}
+                </div>
+            )}
+
             <div className={styles.dateRow}>
-                <CalendarButton date={date} onDateChange={handleDateChange} />
-                <button className={styles.deleteBtn} onClick={handleDelete}>
-                    <Trash2 className={styles.deleteIcon} />
-                    삭제하기
-                </button>
+                <CalendarButton date={date} onDateChange={handleDateChange} disabled={!canEdit} />
+                {isOwner && (
+                    <button className={styles.deleteBtn} onClick={handleDelete}>
+                        <Trash2 className={styles.deleteIcon} />
+                        삭제하기
+                    </button>
+                )}
             </div>
 
             <DetailTab activeTab={activeTab} onTabChange={setActiveTab} />
@@ -102,15 +125,23 @@ function MyScheduleDetail({ scheduleId, info, route = [], loading, error }: MySc
                 )}
 
                 {activeTab === 'budget' && (
-                    <BudgetTab initialContent={info.budgetDetail ?? ''} onSave={handleSaveBudget} />
+                    <BudgetTab
+                        initialContent={info.budgetDetail ?? ''}
+                        onSave={canEdit ? handleSaveBudget : undefined}
+                        readOnly={!canEdit}
+                    />
                 )}
 
                 {activeTab === 'todo' && (
-                    <TodoTab initialContent={info.todoDetail ?? ''} onSave={handleSaveTodo} />
+                    <TodoTab
+                        initialContent={info.todoDetail ?? ''}
+                        onSave={canEdit ? handleSaveTodo : undefined}
+                        readOnly={!canEdit}
+                    />
                 )}
 
                 {activeTab === 'share' && (
-                    <ShareTab myScheduleId={scheduleId} />
+                    <ShareTab myScheduleId={scheduleId} isOwner={isOwner} />
                 )}
             </div>
         </div>
