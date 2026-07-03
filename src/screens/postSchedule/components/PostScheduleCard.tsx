@@ -1,39 +1,67 @@
+import { Calendar, Eye, Heart, MapPin, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import type { PostSchedule } from "../../../types";
+import "./PostScheduleCard.css";
 
+interface PostScheduleCardProps {
+    post: PostSchedule;
+}
 
-// interface PostScheduleCardDatas {
-//     scheduleTitle: string;
-//     placeTitle: string;
-//     addr1: string;
-//     addr2: string;
-//     viewCount: number;
-//     likeCount: number;
-//     name: string;
-// }
+function PostScheduleCard({ post }: PostScheduleCardProps) {
+    const navigate = useNavigate();
+    const authorName = post.anonymous ? "익명" : post.author;
 
-
-export default function PostScheduleCard() {
     return (
-        <div className="cart-item-container">
-            <div className="cart-item-image-wrapper">
-                <img
-                    src="/bbangee.jpeg"
-                    alt="빵빵이"
-                    className="cart-item-image"
-                />
-            </div>
-
-            <div className="cart-item-info-container">
-                <div>
-                    <h4 className="cart-item-title">
-                        랜더스 필드
-                    </h4>
-                    <div className="cart-item-category">
-                        레저스포츠
-                    </div>
+        <article
+            className="post-card"
+            onClick={() => navigate(`/postSchedule/${post.postId}`)}
+        >
+            <div className="post-card-header">
+                <div className="post-card-title-group">
+                    <h3 className="post-card-title">{post.postTitle}</h3>
+                    <p className="post-card-subtitle">{post.scheduleTitle}</p>
                 </div>
-
-            
+                {post.isMine && <span className="post-card-mine-badge">내 게시물</span>}
             </div>
-        </div >
+
+            <div className="post-card-meta">
+                <span className="post-card-meta-item">
+                    <User className="post-card-meta-icon" />
+                    {authorName}
+                </span>
+                <span className="post-card-meta-item">
+                    <Calendar className="post-card-meta-icon" />
+                    {post.startAt}
+                </span>
+                <span className="post-card-meta-item">
+                    <MapPin className="post-card-meta-icon" />
+                    {post.placeCount}곳
+                </span>
+            </div>
+
+            <div className="post-card-tag-list">
+                {post.placeTitles.map((placeTitle) => (
+                    <span key={placeTitle} className="post-card-tag">
+                        {placeTitle}
+                    </span>
+                ))}
+            </div>
+
+            <div className="post-card-footer">
+                <span>{post.createdAt}</span>
+                <div className="post-card-stats">
+                    <span className="post-card-stat">
+                        <Eye className="post-card-stat-icon" />
+                        {post.viewCount}
+                    </span>
+                    <span className="post-card-stat">
+                        <Heart className="post-card-stat-icon" />
+                        {post.likeCount}
+                    </span>
+                </div>
+            </div>
+        </article>
     );
 }
+
+export default PostScheduleCard;
