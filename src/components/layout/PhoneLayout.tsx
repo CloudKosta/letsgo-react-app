@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './Header';
 import Navbar from './NavBar';
 import MyScheduleLayout from '../../screens/mySchedule/MyScheduleLayout';
@@ -6,7 +6,7 @@ import PostScheduleLayout from '../../screens/postSchedule/PostScheduleLayout';
 import Place from '../../screens/place/Place';
 import Cart from '../../screens/cart/Cart';
 import ChatBot from '../../screens/chatBot/ChatBot';
-import Login from '../../screens/User/Login';
+import UserApp from '../../screens/User/UserApp';
 
 function PhoneLayoutContent() {
 
@@ -21,7 +21,7 @@ function PhoneLayoutContent() {
                     <Route path="/mySchedule/*" element={<MyScheduleLayout />} />
                     <Route path="/postSchedule/*" element={<PostScheduleLayout />} />
                     <Route path="/chat" element={<ChatBot />} />
-                    <Route path="/login" element={<Login />} />
+                    <Route path="/user/*" element={<UserApp />} />
                 </Routes>
             </main>
 

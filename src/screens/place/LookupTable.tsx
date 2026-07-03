@@ -97,29 +97,33 @@ export default function LookupTable() {
                 </div>
             </div>
 
-            {selectedMajor && subCategories.length > 0 && (
-                <div className="lookup-section">
-                    <div className="lookup-section-title">소분류</div>
-                    <div className="lookup-button-group">
-                        <button
-                            className={`lookup-btn ${selectedSub === '' ? 'active' : ''}`}
-                            onClick={() => setSelectedSub('')}
-                        >
-                            전체
-                        </button>
-                        {subCategories.map((sub) => (
+            <div className={`lookup-section-sub-container ${selectedMajor && subCategories.length > 0 ? 'open' : ''}`}>
+                <div className="lookup-section-sub-inner">
+                    <div className="lookup-section">
+                        <div className="lookup-section-title">소분류</div>
+                        <div className="lookup-button-group">
                             <button
-                                key={sub}
-                                className={`lookup-btn ${selectedSub === sub ? 'active' : ''}`}
-                                onClick={() => handleSubSelect(sub)}
+                                className={`lookup-btn ${selectedSub === '' ? 'active' : ''}`}
+                                onClick={() => setSelectedSub('')}
                             >
-                                {sub}
+                                전체
                             </button>
-                        ))}
+                            {subCategories.map((sub) => (
+                                <button
+                                    key={sub}
+                                    className={`lookup-btn ${selectedSub === sub ? 'active' : ''}`}
+                                    onClick={() => handleSubSelect(sub)}
+                                >
+                                    {sub}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     );
 }
+
+
 

@@ -1,25 +1,11 @@
 import { useState } from "react";
-import Input from "./Input";
-import Button from "./Button";
+import { Link } from "react-router-dom";
+import Input from "./components/Input";
+import Button from "./components/Button";
+import { useLogin } from "./hooks/useLogin";
 
-interface LoginProps {
-    errorMessage?: string;
-    
-    onSubmit?: (userID: string, password: string) => void;
-    onClickGoogleLogin?: () => void;
-    onClickGetId?: () => void;
-    onClickUpdatePw?: () => void;
-    onClickSignup?: () => void;
-}
-
-function Login({
-    errorMessage,
-    onSubmit,
-    onClickGoogleLogin,
-    onClickGetId,
-    onClickUpdatePw,
-    onClickSignup,
-}: LoginProps) {
+function Login() {
+    const { errorMessage, loading, handleLogin } = useLogin();
     const [userID, setUserID] = useState("");
     const [password, setPassword] = useState("");
 
@@ -29,7 +15,7 @@ function Login({
             alert("아이디와 비밀번호를 입력해 주세요.");
             return;
         }
-        onSubmit?.(userID, password);
+        handleLogin(userID, password);
     };
 
     return (
@@ -62,22 +48,22 @@ function Login({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button text="로그인" type="submit" />
+                <Button text={loading ? "로그인 중..." : "로그인"} type="submit" disabled={loading} />
             </form>
 
             <div className="flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px]">
-                <a onClick={onClickGoogleLogin} className="text-[#868e96] font-medium cursor-pointer hover:text-[#ff7a00]">
+                <a href="/oauth2/authorization/google" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
                     구글로 로그인
                 </a>
-                <a onClick={onClickGetId} className="text-[#868e96] font-medium cursor-pointer hover:text-[#ff7a00]">
+                <Link to="/user/getid" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
                     아이디 찾기
-                </a>
-                <a onClick={onClickUpdatePw} className="text-[#868e96] font-medium cursor-pointer hover:text-[#ff7a00]">
+                </Link>
+                <Link to="/user/updatepw" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
                     비밀번호 찾기
-                </a>
-                <a onClick={onClickSignup} className="text-[#868e96] font-medium cursor-pointer hover:text-[#ff7a00]">
+                </Link>
+                <Link to="/user/signup" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
                     회원가입
-                </a>
+                </Link>
             </div>
         </div>
     );
