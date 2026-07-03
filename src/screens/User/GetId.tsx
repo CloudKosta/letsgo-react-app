@@ -2,16 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Input from "./components/Input";
 import Button from "./components/Button";
+import { findId } from "../../api/userApi";
 
-
-interface GetIdProps {
-    onSubmit?: (name: string, email: string) => Promise<string>;
-}
-
-function GetId({ onSubmit }: GetIdProps) {
+function GetId() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [foundId, setFoundId] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -22,17 +19,14 @@ function GetId({ onSubmit }: GetIdProps) {
             return;
         }
 
-        if (!onSubmit) {
-            setFoundId("서버 연동이 아직 설정되지 않았습니다.");
-            return;
-        }
-
         try {
             setLoading(true);
-            const result = await onSubmit(name, email);
-            setFoundId(result);
-        } catch {
-            setFoundId("일치하는 회원 정보를 찾을 수 없습니다.");
+            setErrorMessage(null);
+            setFoundId(null);
+            const result = await findId(name, email);
+            setFoundId(`회원님의 아이디는 "${result}" 입니다.`);
+        } catch (err) {
+            setErrorMessage(err instanceof Error ? err.message : "일치하는 회원 정보를 찾을 수 없습니다.");
         } finally {
             setLoading(false);
         }
@@ -72,6 +66,12 @@ function GetId({ onSubmit }: GetIdProps) {
             {foundId && (
                 <div className="mt-5 p-4 rounded-2xl bg-[#f8f9fa] border border-[#e9ecef] text-center font-bold text-[#ff7a00]">
                     {foundId}
+                </div>
+            )}
+
+            {errorMessage && (
+                <div className="mt-5 p-4 rounded-2xl bg-[#fdecec] border border-[#f5c2c0] text-center font-medium text-[#d9534f]">
+                    {errorMessage}
                 </div>
             )}
 

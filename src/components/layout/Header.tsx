@@ -1,15 +1,17 @@
-import { useState } from 'react';
 import type { HeaderButtonProp } from './HeaderButton';
 import { LogInIcon, LogOutIcon, SearchIcon } from 'lucide-react';
 import HeaderButton from './HeaderButton';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 function Header() {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
+    const user = useAuthStore((s) => s.user);
+    const logout = useAuthStore((s) => s.logout);
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
+        logout();
         navigate('/user/login');
     };
 
@@ -26,6 +28,9 @@ function Header() {
             </a>
 
             <div className="flex items-center gap-2">
+                {isLoggedIn && user && (
+                    <span className="text-sm font-medium text-gray-700">{user.name}님</span>
+                )}
                 {headerItems
                     .filter((item) => {
                         if (item.label === 'login') return !isLoggedIn;

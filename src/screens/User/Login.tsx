@@ -52,7 +52,7 @@ function Login() {
             </form>
 
             <div className="flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px]">
-                <a href="/oauth2/authorization/google" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
+                <a href={`${import.meta.env.VITE_API_BASE_URL}/oauth2/authorization/google`} className="text-[#868e96] font-medium hover:text-[#ff7a00]">
                     구글로 로그인
                 </a>
                 <Link to="/user/getid" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
