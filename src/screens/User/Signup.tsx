@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Input from "./components/Input";
 import Button from "./components/Button";
 import { signUp } from "../../api/userApi";
+import "./Signup.css";
 
 function Signup() {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ function Signup() {
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (
@@ -44,9 +45,9 @@ function Signup() {
     };
 
     return (
-        <div className="flex flex-col justify-start w-full max-w-[390px] mx-auto px-6 py-[30px] bg-white box-border">
-            <div className="text-center mb-8">
-                <h2 className="text-2xl font-extrabold text-[#222222]">회원가입</h2>
+        <div className="signup-container">
+            <div className="user-form-header">
+                <h2 className="user-form-title">회원가입</h2>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -96,8 +97,8 @@ function Signup() {
                 <Button text={loading ? "가입 중..." : "회원가입"} type="submit" disabled={loading} />
             </form>
 
-            <div className="flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px]">
-                <Link to="/user/login" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
+            <div className="user-form-links">
+                <Link to="/user/login" className="user-form-link">
                     로그인
                 </Link>
             </div>
