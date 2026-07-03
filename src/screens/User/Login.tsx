@@ -2,13 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Input from "./components/Input";
 import Button from "./components/Button";
+import { useLogin } from "./hooks/useLogin";
 
-interface LoginProps {
-    errorMessage?: string;
-    onSubmit?: (userID: string, password: string) => void;
-}
-
-function Login({ errorMessage, onSubmit }: LoginProps) {
+function Login() {
+    const { errorMessage, loading, handleLogin } = useLogin();
     const [userID, setUserID] = useState("");
     const [password, setPassword] = useState("");
 
@@ -18,7 +15,7 @@ function Login({ errorMessage, onSubmit }: LoginProps) {
             alert("아이디와 비밀번호를 입력해 주세요.");
             return;
         }
-        onSubmit?.(userID, password);
+        handleLogin(userID, password);
     };
 
     return (
@@ -51,7 +48,7 @@ function Login({ errorMessage, onSubmit }: LoginProps) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button text="로그인" type="submit" />
+                <Button text={loading ? "로그인 중..." : "로그인"} type="submit" disabled={loading} />
             </form>
 
             <div className="flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px]">
