@@ -1,4 +1,4 @@
-import "./TabButton.css";
+import "./css/TabButton.css";
 
 export type PostTabType = "all" | "mine";
 
