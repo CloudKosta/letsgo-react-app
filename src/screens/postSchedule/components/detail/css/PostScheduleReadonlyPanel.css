@@ -1,0 +1,13 @@
+@reference "tailwindcss";
+
+.post-schedule-readonly-panel {
+  @apply bg-white rounded-2xl border border-gray-200 px-4 py-4 shadow-sm;
+}
+
+.post-schedule-readonly-content {
+  @apply whitespace-pre-wrap text-[15px] leading-relaxed text-gray-800;
+}
+
+.post-schedule-readonly-empty {
+  @apply w-full rounded-xl border border-dashed border-gray-300 px-4 py-8 flex items-center justify-center text-sm text-gray-400;
+}

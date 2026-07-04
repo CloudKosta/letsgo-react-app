@@ -1,29 +1,41 @@
 import type { RouteSchedule } from "../../../../types";
+import "./css/PostScheduleRouteList.css";
 
-
-interface PostScheduleDetailCardProps {
-  routes : RouteSchedule[];
+interface PostScheduleRouteListProps {
+  routes: RouteSchedule[];
 }
 
+function getVisitOrder(order: string) {
+  const parsed = Number(order);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
 
-export default function PostScheduleDetail({ routes }: PostScheduleDetailCardProps) {
-    return(
-        <div>
-            <ul className="flex flex-col gap-3">
-        {routes.map((route) => (
-          <li 
-            key={route.visitId} 
-            className="flex items-center w-60 p-3 bg-white border-2 border-gray-600 rounded-xl"
-          >
-            <span className="flex items-center justify-center w-6 h-6 mr-3 text-sm font-bold border-2 border-gray-600 rounded-full">
-              {route.visitOrder}
-            </span>
-            <span className="font-bold text-gray-800">
-              {route.title}
-            </span>
-          </li>
-        ))}
-      </ul>
-        </div>
+export default function PostScheduleRouteList({ routes }: PostScheduleRouteListProps) {
+  const sortedRoutes = [...routes].sort((a, b) => getVisitOrder(a.visitOrder) - getVisitOrder(b.visitOrder));
+
+  if (sortedRoutes.length === 0) {
+    return (
+      <div className="post-schedule-route-list-empty">표시할 일정이 없습니다.</div>
     );
+  }
+
+  return (
+    <div className="post-schedule-route-list">
+      {sortedRoutes.map((route, index) => (
+        <div key={route.visitId} className="post-schedule-route-list-item">
+          <span className="post-schedule-route-list-order">
+            {route.visitOrder || index + 1}
+          </span>
+          <span className="post-schedule-route-list-title">
+            {route.title}
+          </span>
+          {route.distanceToNext > 0 && (
+            <span className="post-schedule-route-list-distance">
+              {route.distanceToNext}km
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
 }

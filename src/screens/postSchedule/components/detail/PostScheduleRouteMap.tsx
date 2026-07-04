@@ -1,5 +1,5 @@
 import type { MapSchedule } from '../../../../types';
-import './PostScheduleRouteMap.css';
+import './css/PostScheduleRouteMap.css';
 
 interface PostScheduleRouteMapProps {
     maps: MapSchedule[];

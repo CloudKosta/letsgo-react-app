@@ -1,7 +1,7 @@
 import { Eye, Heart, MapPin, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { PostSchedule } from "../../../types";
-import "./PostScheduleCard.css";
+import "./css/PostScheduleCard.css";
 
 interface PostScheduleCardProps {
     post: PostSchedule;

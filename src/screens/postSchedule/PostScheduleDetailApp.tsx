@@ -1,39 +1,64 @@
+import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import PostScheduleRouteMap from "./components/detail/PostScheduleRouteMap";
-import PostScheduleRouteList from "./components/detail/PostScheduleRouteList";
+import PostScheduleBudget from "./components/detail/PostScheduleBudget";
+import PostScheduleDetailTab from "./components/detail/PostScheduleDetailTab";
+import type { PostScheduleDetailTabType } from "./components/detail/PostScheduleDetailTab";
+import PostScheduleSchedule from "./components/detail/PostScheduleSchedule";
+import PostScheduleTodo from "./components/detail/PostScheduleTodo";
 import { mockPostScheduleDetails } from "../../data/mockPostScheduleDetails";
+import "./PostScheduleDetailApp.css";
 
 export default function PostScheduleDetailApp() {
   const { id } = useParams();
   const detail = id ? mockPostScheduleDetails[id] : null;
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<PostScheduleDetailTabType>("schedule");
 
   // useEffect(() => {
   //   if (!id) return;
-    
+  //
   //   axios.get<PostScheduleDetail>(`/api/postSchedule/${id}`)
   //     .then(res => {
   //       setDetail(res.data);
   //     });
-  //   }, [id]);
-
+  // }, [id]);
 
   if (!detail) {
-    return <div>로딩중...</div>;
+    return <div className="post-schedule-detail-not-found">로딩중...</div>;
   }
 
   return (
-
-    <>
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 px-4 flex items-center z-50">
-        <button onClick={() => navigate("/postSchedule")}>
+    <div className="post-schedule-detail-page">
+      <header className="post-schedule-detail-header">
+        <button
+          type="button"
+          className="post-schedule-detail-back-btn"
+          onClick={() => navigate("/postSchedule")}
+          aria-label="목록으로 돌아가기"
+        >
           <ArrowLeft size={24} />
         </button>
+        <h1 className="post-schedule-detail-title">{detail.scheduleTitle}</h1>
       </header>
 
-      <PostScheduleRouteMap maps={detail.maps} />
-      <PostScheduleRouteList routes={detail.routes} />
-    </>
+      <main className="post-schedule-detail-content">
+        <PostScheduleDetailTab activeTab={activeTab} onTabChange={setActiveTab} />
+
+        <div className="post-schedule-detail-tab-content">
+          {activeTab === "schedule" && (
+            <PostScheduleSchedule maps={detail.maps} routes={detail.routes} />
+          )}
+
+          {activeTab === "budget" && (
+            <PostScheduleBudget budgetDetail={detail.budgetDetail} />
+          )}
+
+          {activeTab === "todo" && (
+            <PostScheduleTodo todoDetail={detail.todoDetail} />
+          )}
+        </div>
+      </main>
+    </div>
   );
 }

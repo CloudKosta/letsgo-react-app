@@ -1,5 +1,5 @@
 import { Search, X } from "lucide-react";
-import "./SearchBox.css";
+import "./css/SearchBox.css";
 
 interface SearchBoxProps {
     value: string;
