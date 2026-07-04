@@ -2,25 +2,18 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "./components/Input";
 import Button from "./components/Button";
+import { updatePassword } from "../../api/userApi";
+import "./UpdatePw.css";
 
-interface UpdatePwData {
-    userID: string;
-    email: string;
-    password: string;
-}
-
-interface UpdatePwProps {
-    onSubmit?: (data: UpdatePwData) => Promise<void> | void;
-}
-
-function UpdatePw({ onSubmit }: UpdatePwProps) {
+function UpdatePw() {
     const navigate = useNavigate();
     const [userID, setUserID] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (
@@ -37,14 +30,22 @@ function UpdatePw({ onSubmit }: UpdatePwProps) {
             return;
         }
 
-        await onSubmit?.({ userID, email, password });
-        navigate("/user/login");
+        try {
+            setLoading(true);
+            await updatePassword({ userID, email, password, passwordConfirm });
+            alert("비밀번호가 변경되었습니다. 로그인해 주세요.");
+            navigate("/user/login");
+        } catch (err) {
+            alert(err instanceof Error ? err.message : "비밀번호 변경에 실패했습니다.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="flex flex-col justify-center w-full max-w-[390px] mx-auto px-6 py-[30px] bg-white box-border">
-            <div className="text-center mb-8">
-                <h2 className="text-2xl font-extrabold text-[#222222]">비밀번호 찾기</h2>
+        <div className="user-form-container">
+            <div className="user-form-header">
+                <h2 className="user-form-title">비밀번호 찾기</h2>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -83,11 +84,11 @@ function UpdatePw({ onSubmit }: UpdatePwProps) {
                     value={passwordConfirm}
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                 />
-                <Button text="비밀번호 변경" type="submit" />
+                <Button text={loading ? "변경 중..." : "비밀번호 변경"} type="submit" disabled={loading} />
             </form>
 
-            <div className="flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px]">
-                <Link to="/user/login" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
+            <div className="user-form-links">
+                <Link to="/user/login" className="user-form-link">
                     로그인
                 </Link>
             </div>

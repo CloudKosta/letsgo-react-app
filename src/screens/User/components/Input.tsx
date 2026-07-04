@@ -1,3 +1,5 @@
+import "./css/Input.css";
+
 interface InputProps {
     label: string;
     id: string;
@@ -10,8 +12,8 @@ interface InputProps {
 
 function Input({ label, id, name, value, onChange, type = "text", placeholder }: InputProps) {
     return (
-        <div className="mb-4">
-            <label htmlFor={id} className="block text-[13px] font-bold text-[#534537] mb-1.5">
+        <div className="input-wrapper">
+            <label htmlFor={id} className="input-label">
                 {label}
             </label>
             <input
@@ -22,7 +24,7 @@ function Input({ label, id, name, value, onChange, type = "text", placeholder }:
                 onChange={onChange}
                 placeholder={placeholder}
                 autoComplete="off"
-                className="w-full h-[50px] bg-[#f8f9fa] border border-[#e9ecef] rounded-2xl px-4 text-[15px] outline-none transition-all duration-300 focus:border-[#ff7a00] focus:bg-white focus:ring-[3px] focus:ring-[#ff7a00]/10"
+                className="input-field"
             />
         </div>
     );

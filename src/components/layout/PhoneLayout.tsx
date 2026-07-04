@@ -7,6 +7,7 @@ import Place from '../../screens/place/Place';
 import Cart from '../../screens/cart/Cart';
 import ChatBot from '../../screens/chatBot/ChatBot';
 import UserApp from '../../screens/User/UserApp';
+import OAuthCallback from '../../screens/User/OAuthCallback';
 
 function PhoneLayoutContent() {
 
@@ -22,6 +23,7 @@ function PhoneLayoutContent() {
                     <Route path="/postSchedule/*" element={<PostScheduleLayout />} />
                     <Route path="/chat" element={<ChatBot />} />
                     <Route path="/user/*" element={<UserApp />} />
+                    <Route path="/oauth/callback" element={<OAuthCallback />} />
                 </Routes>
             </main>
 

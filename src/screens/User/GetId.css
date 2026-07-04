@@ -1,0 +1,33 @@
+@reference "../../index.css";
+
+.user-form-container {
+    @apply min-h-full flex flex-col justify-center w-full max-w-[390px] mx-auto px-6 py-[30px] bg-white box-border;
+}
+
+.user-form-header {
+    @apply text-center mb-8;
+}
+
+.user-form-title {
+    @apply text-2xl font-extrabold text-[#222222];
+}
+
+.getid-description {
+    @apply text-[13px] text-[#868e96] mb-5 leading-relaxed;
+}
+
+.getid-result {
+    @apply mt-5 p-4 rounded-2xl bg-[#f8f9fa] border border-[#e9ecef] text-center font-bold text-blue-600;
+}
+
+.getid-error {
+    @apply mt-5 p-4 rounded-2xl bg-[#fdecec] border border-[#f5c2c0] text-center font-medium text-[#d9534f];
+}
+
+.user-form-links {
+    @apply flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px];
+}
+
+.user-form-link {
+    @apply text-[#868e96] font-medium hover:text-blue-600;
+}
