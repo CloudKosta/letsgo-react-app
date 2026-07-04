@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Heart, MapPin, SquarePlus, ImageOff } from "lucide-react";
 import type { PlaceDTO } from "./interface";
+import axios from "axios"
 import "./PlaceBox.css";
 
 interface PlaceBoxProps {
@@ -9,6 +10,22 @@ interface PlaceBoxProps {
 
 export default function PlaceBox({ place }: PlaceBoxProps) {
     const [imageError, setImageError] = useState(false);
+    const [likeCount, setLikeCount] = useState(place.likeCount || 0);
+
+    const handleLikeClick = async () => {
+        try {
+            const params = new URLSearchParams();
+            params.append("placeId", place.placeId.toString());
+            params.append("placeType", place.placeType.toString());
+
+            const response = await axios.post("http://127.0.0.1:5531/placeLikeAjax", params);
+            if (response.data && response.data.result === "success") {
+                setLikeCount(response.data.likeCount);
+            }
+        } catch (error) {
+            console.error("좋아요 오류:", error);
+        }
+    }
 
     return (
         <div className="place-box-container">
@@ -28,16 +45,16 @@ export default function PlaceBox({ place }: PlaceBoxProps) {
                     </div>
                 )}
 
-                <button className="place-box-like-button">
+                <button className="place-box-like-button" onClick={handleLikeClick}>
                     <Heart className="place-box-like-icon" />
-                    <span className="text-white text-xs ml-1">{place.likeCount || 0}</span>
+                    <span className="text-gray-600 text-xs ml-1">{likeCount}</span>
                 </button>
             </div>
 
             <div className="place-box-content">
                 <div className="place-box-meta">
                     <MapPin className="place-box-meta-icon" />
-                    <span className="truncate">{place.addr1 || "주소 미상"}</span>
+                    <span className="truncate">{place.addr1 || "주소 없음"}</span>
                 </div>
 
                 <h3 className="place-box-title truncate" title={place.title}>

@@ -10,6 +10,19 @@ export interface PlaceDTO {
     placeType: string;
 }
 
-export interface LookupTable {
+export type TabType = 'LEISURE' | 'STAY' | 'RESTAURANT';
 
+export interface LookupTableProps {
+    currentTab: TabType;
+    setCurrentTab: (tab: TabType) => void;
+    selectedMajor: string;
+    setSelectedMajor: (major: string) => void;
+    selectedSub: string;
+    setSelectedSub: (sub: string) => void;
+
+}
+
+export interface SearchInputProps {
+    keyword: string
+    setKeyword: (keyword: string) => void;
 }
