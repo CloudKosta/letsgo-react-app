@@ -1,5 +1,6 @@
 import { api } from "./axiosInstance";
 import { tokenStorage } from "./tokenStorage";
+import { useAuthStore } from "../store/authStore";
 
 export interface LoginRequest {
   userID: string;
@@ -16,9 +17,10 @@ export async function login(userID: string, password: string) {
 
   const token = authHeader.replace(/^Bearer\s+/i, "");
   tokenStorage.set(token);
+  useAuthStore.getState().setFromToken(token);
   return res.data;
 }
 
 export function logout() {
-  tokenStorage.clear();
+  useAuthStore.getState().logout();
 }
