@@ -1,12 +1,13 @@
 export type { MapSchedule, PostSchedule, PostScheduleDetail, RouteSchedule } from './postSchedule';
 
 export interface MySchedule {
-    myScheduleId: number;
+    myScheduleId: string;
     myScheduleTitle: string;
     startAt: string;
     placeCount: number;
     placeTitle: string[];
     isShared: boolean;
+    ownerId: string;
 }
 
 

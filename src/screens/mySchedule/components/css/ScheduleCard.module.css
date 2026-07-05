@@ -24,6 +24,10 @@
     @apply inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-600 text-[0.6875rem] font-semibold rounded-full shrink-0 ml-2;
 }
 
+.receivedBadge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[0.6875rem] font-semibold rounded-full shrink-0 ml-2;
+}
+
 .sharedIcon {
     @apply w-3 h-3;
 }

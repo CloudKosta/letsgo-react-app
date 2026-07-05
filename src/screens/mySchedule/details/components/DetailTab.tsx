@@ -12,12 +12,15 @@ const tabs: { key: DetailTabType; label: string }[] = [
 interface DetailTabProps {
     activeTab: DetailTabType;
     onTabChange: (tab: DetailTabType) => void;
+    isOwner?: boolean;
 }
 
-function DetailTab({ activeTab, onTabChange }: DetailTabProps) {
+function DetailTab({ activeTab, onTabChange, isOwner = false }: DetailTabProps) {
+    const visibleTabs = isOwner ? tabs : tabs.filter((tab) => tab.key !== 'share');
+
     return (
         <div className={styles.wrapper}>
-            {tabs.map((tab) => (
+            {visibleTabs.map((tab) => (
                 <button
                     key={tab.key}
                     onClick={() => onTabChange(tab.key)}

@@ -1,6 +1,7 @@
-import { Calendar, MapPin, Share2 } from 'lucide-react';
+import { Calendar, MapPin, Users, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { MySchedule } from '../../../types';
+import { useAuthStore } from '../../../store/authStore';
 import styles from './css/ScheduleCard.module.css';
 
 interface ScheduleCardProps {
@@ -9,6 +10,8 @@ interface ScheduleCardProps {
 
 function ScheduleCard({ schedule }: ScheduleCardProps) {
     const navigate = useNavigate();
+    const myUserId = useAuthStore((s) => s.user?.userID);
+    const isReceived = !!schedule.ownerId && !!myUserId && schedule.ownerId !== myUserId;
 
     return (
         <div
@@ -18,12 +21,17 @@ function ScheduleCard({ schedule }: ScheduleCardProps) {
         >
             <div className={styles.header}>
                 <h3 className={styles.title}>{schedule.myScheduleTitle}</h3>
-                {schedule.isShared && (
-                    <span className={styles.sharedBadge}>
-                        <Share2 className={styles.sharedIcon} />
-                        공유됨
+                {isReceived ? (
+                    <span className={styles.receivedBadge}>
+                        <UserCheck className={styles.sharedIcon} />
+                        공유받음
                     </span>
-                )}
+                ) : schedule.isShared ? (
+                    <span className={styles.sharedBadge}>
+                        <Users className={styles.sharedIcon} />
+                        동반자 추가됨
+                    </span>
+                ) : null}
             </div>
 
             <div className={styles.meta}>

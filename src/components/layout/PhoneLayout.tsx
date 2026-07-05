@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { toast } from '../../store/toastStore';
 import Header from './Header';
 import Navbar from './NavBar';
 import MyScheduleLayout from '../../screens/mySchedule/MyScheduleLayout';
@@ -8,10 +10,18 @@ import Cart from '../../screens/cart/Cart';
 import ChatBot from '../../screens/chatBot/ChatBot';
 import UserApp from '../../screens/User/UserApp';
 import OAuthCallback from '../../screens/User/OAuthCallback';
+import Toaster from '../shared/Toaster';
 
 function PhoneLayoutContent() {
     const location = useLocation();
     const isUserPage = location.pathname.startsWith('/user');
+
+    useEffect(() => {
+        if (sessionStorage.getItem('sessionExpired')) {
+            sessionStorage.removeItem('sessionExpired');
+            toast.error('세션이 만료되었습니다. 다시 로그인해 주세요.');
+        }
+    }, []);
 
     return (
         <div className="flex flex-col h-screen">
@@ -30,6 +40,7 @@ function PhoneLayoutContent() {
             </main>
 
             {!isUserPage && <Navbar />}
+            <Toaster />
         </div>
     );
 }

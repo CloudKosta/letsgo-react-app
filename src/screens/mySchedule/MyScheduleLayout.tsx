@@ -6,9 +6,9 @@ import { useScheduleDetail } from './hooks/useScheduleDetail';
 
 function MyScheduleLayout() {
     const match = useMatch('/mySchedule/:id');
-    const scheduleId = match ? Number(match.params.id) : undefined;
+    const scheduleId = match ? match.params.id : undefined;
 
-    const { info, route, permission, loading, error, patchInfo } = useScheduleDetail(scheduleId);
+    const { info, route, permission, loading, error, patchInfo, reload } = useScheduleDetail(scheduleId);
 
     return (
         <>
@@ -26,6 +26,7 @@ function MyScheduleLayout() {
                             loading={loading}
                             error={error}
                             patchInfo={patchInfo}
+                            reload={reload}
                         />
                     }
                 />

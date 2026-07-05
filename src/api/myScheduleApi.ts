@@ -5,6 +5,7 @@ import type {
   MySchedule,
   ScheduleDetailInfo,
   RouteSchedule,
+  MapSchedule,
 } from "../types";
 
 interface MyScheduleVO {
@@ -15,6 +16,7 @@ interface MyScheduleVO {
   placeTitle: string;
   addr1: string;
   firstImage: string;
+  ownerId: string;
 }
 
 interface PageResponse<T> {
@@ -41,12 +43,13 @@ function getErrorMessage(e: unknown, fallback: string): string {
 function toMySchedule(vo: MyScheduleVO): MySchedule {
   const places = vo.placeTitle ? vo.placeTitle.split(" / ") : [];
   return {
-    myScheduleId: Number(vo.myScheduleId),
+    myScheduleId: vo.myScheduleId,
     myScheduleTitle: vo.myScheduleTitle,
     startAt: vo.startAt,
     placeCount: places.length,
     placeTitle: places,
     isShared: vo.isShared === "1" || vo.isShared === "true",
+    ownerId: vo.ownerId,
   };
 }
 
@@ -55,12 +58,60 @@ export async function getMyScheduleList(): Promise<MySchedule[]> {
   return res.data.content.map(toMySchedule);
 }
 
-export async function getScheduleDetail(scheduleId: number): Promise<ScheduleDetailResponse> {
+export async function getScheduleDetail(scheduleId: string): Promise<ScheduleDetailResponse> {
   const res = await api.get<ScheduleDetailResponse>(`/myschedule/api/${scheduleId}/detail`);
   return res.data;
 }
 
-export async function updateTodo(scheduleId: number, todoDetail: string): Promise<void> {
+export async function getMapSchedule(scheduleId: string): Promise<MapSchedule[]> {
+  const res = await api.get<MapSchedule[]>(`/myschedule/api/${scheduleId}/mapSchedule`);
+  return res.data;
+}
+
+export async function addVisitItem(
+  scheduleId: string,
+  placeId: number,
+  visitOrder: number
+): Promise<boolean> {
+  try {
+    const res = await api.post<boolean>(`/myschedule/api/${scheduleId}/visit`, {
+      placeId: String(placeId),
+      visitOrder,
+    });
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "장소 추가에 실패했습니다."), { cause: e });
+  }
+}
+
+export interface VisitOrderPayload {
+  visitItemId: string;
+  visitOrder: number;
+  distance: string;
+}
+
+export async function updateVisitOrders(
+  scheduleId: string,
+  orders: VisitOrderPayload[]
+): Promise<boolean> {
+  try {
+    const res = await api.put<boolean>(`/myschedule/api/${scheduleId}/visit/orders`, orders);
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "순서 저장에 실패했습니다."), { cause: e });
+  }
+}
+
+export async function deleteVisitItem(scheduleId: string, visitItemId: string): Promise<boolean> {
+  try {
+    const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/visit/${visitItemId}`);
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "장소 삭제에 실패했습니다."), { cause: e });
+  }
+}
+
+export async function updateTodo(scheduleId: string, todoDetail: string): Promise<void> {
   try {
     await api.put(`/myschedule/api/${scheduleId}/todo`, { todoDetail });
   } catch (e) {
@@ -68,7 +119,7 @@ export async function updateTodo(scheduleId: number, todoDetail: string): Promis
   }
 }
 
-export async function updateBudget(scheduleId: number, budgetDetail: string): Promise<void> {
+export async function updateBudget(scheduleId: string, budgetDetail: string): Promise<void> {
   try {
     await api.put(`/myschedule/api/${scheduleId}/budget`, { budgetDetail });
   } catch (e) {
@@ -76,7 +127,7 @@ export async function updateBudget(scheduleId: number, budgetDetail: string): Pr
   }
 }
 
-export async function updateStartAt(scheduleId: number, startAt: string): Promise<void> {
+export async function updateStartAt(scheduleId: string, startAt: string): Promise<void> {
   try {
     await api.put(`/myschedule/api/${scheduleId}/startAt`, { startAt });
   } catch (e) {
@@ -84,12 +135,12 @@ export async function updateStartAt(scheduleId: number, startAt: string): Promis
   }
 }
 
-export async function getCompanions(scheduleId: number): Promise<Colleague[]> {
+export async function getCompanions(scheduleId: string): Promise<Colleague[]> {
   const res = await api.get<Colleague[]>(`/myschedule/api/${scheduleId}/companion`);
   return res.data;
 }
 
-export async function addCompanion(scheduleId: number, sharedUserId: string): Promise<boolean> {
+export async function addCompanion(scheduleId: string, sharedUserId: string): Promise<boolean> {
   try {
     const res = await api.post<boolean>(`/myschedule/api/${scheduleId}/companion`, { sharedUserId });
     return res.data;
@@ -99,7 +150,7 @@ export async function addCompanion(scheduleId: number, sharedUserId: string): Pr
 }
 
 export async function setCompanionPermission(
-  scheduleId: number,
+  scheduleId: string,
   sharedUserId: string,
   permission: string
 ): Promise<boolean> {
@@ -114,11 +165,29 @@ export async function setCompanionPermission(
   }
 }
 
-export async function deleteSchedule(scheduleId: number): Promise<boolean> {
+export async function removeCompanion(scheduleId: string, sharedUserId: string): Promise<boolean> {
+  try {
+    const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/companion/${sharedUserId}`);
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "동반자 삭제에 실패했습니다."), { cause: e });
+  }
+}
+
+export async function deleteSchedule(scheduleId: string): Promise<boolean> {
   try {
     const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}`);
     return res.data;
   } catch (e) {
     throw new Error(getErrorMessage(e, "일정 삭제에 실패했습니다."), { cause: e });
+  }
+}
+
+export async function leaveSharedSchedule(scheduleId: string): Promise<boolean> {
+  try {
+    const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/leave`);
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "공유 나가기에 실패했습니다."), { cause: e });
   }
 }

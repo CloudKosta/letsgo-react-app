@@ -1,0 +1,24 @@
+@reference "../../index.css";
+
+.naver-route-map {
+    @apply w-full rounded-2xl overflow-hidden border border-gray-200 relative isolate;
+}
+
+.naver-route-empty {
+    @apply w-full rounded-2xl border border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-400;
+}
+
+.naver-route-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    border: 2px solid #fff;
+}

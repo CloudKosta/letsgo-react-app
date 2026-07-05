@@ -1,32 +1,41 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2 } from 'lucide-react';
+import { Trash2, LogOut } from 'lucide-react';
 import type { ScheduleDetailInfo, RouteSchedule } from '../../../types';
 import DetailTab from './components/DetailTab';
 import type { DetailTabType } from './components/DetailTab';
 import CalendarButton from './components/CalendarButton';
-import RouteMap from './components/RouteMap';
+import NaverRouteMap from '../../../components/shared/NaverRouteMap';
 import PlaceList from './components/PlaceList';
+import AddPlaceSheet from './components/AddPlaceSheet';
+import { useMapSchedule } from '../hooks/useMapSchedule';
+import { addVisitItem, leaveSharedSchedule, updateVisitOrders, deleteVisitItem } from '../../../api/myScheduleApi';
+import type { PlaceItem } from '../../../api/placeApi';
 import ShareTab from './components/ShareTab';
 import TodoTab from './components/TodoTab';
 import BudgetTab from './components/BudgetTab';
 import { useScheduleMutations } from '../hooks/useScheduleMutations';
+import { toast } from '../../../store/toastStore';
+import { haversineKm, type LatLng } from '../../../utils/geo';
 import styles from './MyScheduleDetail.module.css';
 
 interface MyScheduleDetailProps {
-    scheduleId?: number;
+    scheduleId?: string;
     info?: ScheduleDetailInfo | null;
     route?: RouteSchedule[];
     permission?: string | null;
     loading?: boolean;
     error?: string | null;
     patchInfo?: (partial: Partial<ScheduleDetailInfo>) => void;
+    reload?: () => void;
 }
 
-function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, error, patchInfo }: MyScheduleDetailProps) {
+function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, error, patchInfo, reload }: MyScheduleDetailProps) {
     const navigate = useNavigate();
     const { saveTodo, saveBudget, saveStartAt, removeSchedule } = useScheduleMutations(scheduleId);
     const [activeTab, setActiveTab] = useState<DetailTabType>('schedule');
+    const { maps: mapPlaces, reload: reloadMap } = useMapSchedule(scheduleId);
+    const [sheetOpen, setSheetOpen] = useState(false);
 
     if (loading) {
         return <div className={styles.notFound}>불러오는 중...</div>;
@@ -41,6 +50,57 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
     const isOwner = permission === 'OWNER';
     const canEdit = isOwner || permission === 'W';
 
+    const handleAddPlace = async (place: PlaceItem) => {
+        try {
+            await addVisitItem(scheduleId, place.placeId, route.length + 1);
+            reload?.();
+            reloadMap();
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '장소 추가에 실패했습니다.');
+        }
+    };
+
+    const handleSaveOrders = async (ordered: RouteSchedule[]) => {
+        try {
+            const coordByOrder = new Map<string, LatLng>();
+            mapPlaces.forEach((m) => {
+                const lat = Number(m.mapY);
+                const lng = Number(m.mapX);
+                if (lat > 0 && lng > 0) coordByOrder.set(String(m.visitOrder), { lat, lng });
+            });
+
+            const payload = ordered.map((it, i) => {
+                const cur = coordByOrder.get(String(it.visitOrder));
+                const nextItem = ordered[i + 1];
+                const next = nextItem ? coordByOrder.get(String(nextItem.visitOrder)) : undefined;
+                const distance = cur && next ? haversineKm(cur, next) : 0;
+                return {
+                    visitItemId: it.visitId,
+                    visitOrder: i + 1,
+                    distance: distance.toFixed(1),
+                };
+            });
+            await updateVisitOrders(scheduleId, payload);
+            reload?.();
+            reloadMap();
+            toast.success('동선 순서를 저장했습니다.');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '순서 저장에 실패했습니다.');
+        }
+    };
+
+    const handleDeletePlace = async (visitItemId: string) => {
+        if (!window.confirm('이 장소를 삭제할까요?')) return;
+        try {
+            await deleteVisitItem(scheduleId, visitItemId);
+            reload?.();
+            reloadMap();
+            toast.success('장소를 삭제했습니다.');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '장소 삭제에 실패했습니다.');
+        }
+    };
+
     const handleDateChange = async (next: string) => {
         const prev = info.startAt;
         patchInfo?.({ startAt: next });
@@ -48,7 +108,7 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
             await saveStartAt(next);
         } catch (err) {
             patchInfo?.({ startAt: prev });
-            alert(err instanceof Error ? err.message : '날짜 저장에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '날짜 저장에 실패했습니다.');
         }
     };
 
@@ -56,9 +116,9 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
         try {
             await saveTodo(content);
             patchInfo?.({ todoDetail: content });
-            alert('할 일이 저장되었습니다.');
+            toast.success('할 일이 저장되었습니다.');
         } catch (err) {
-            alert(err instanceof Error ? err.message : '할 일 저장에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '할 일 저장에 실패했습니다.');
         }
     };
 
@@ -66,9 +126,9 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
         try {
             await saveBudget(content);
             patchInfo?.({ budgetDetail: content });
-            alert('예산이 저장되었습니다.');
+            toast.success('예산이 저장되었습니다.');
         } catch (err) {
-            alert(err instanceof Error ? err.message : '예산 저장에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '예산 저장에 실패했습니다.');
         }
     };
 
@@ -83,6 +143,16 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
             }
         } catch (err) {
             alert(err instanceof Error ? err.message : '일정 삭제에 실패했습니다.');
+        }
+    };
+
+    const handleLeave = async () => {
+        if (!window.confirm('이 공유 일정에서 나갈까요? 내 목록에서 사라집니다.')) return;
+        try {
+            await leaveSharedSchedule(scheduleId);
+            navigate('/mySchedule');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '공유 나가기에 실패했습니다.');
         }
     };
 
@@ -102,21 +172,32 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
 
             <div className={styles.dateRow}>
                 <CalendarButton date={info.startAt} onDateChange={handleDateChange} disabled={!canEdit} />
-                {isOwner && (
+                {isOwner ? (
                     <button className={styles.deleteBtn} onClick={handleDelete}>
                         <Trash2 className={styles.deleteIcon} />
                         삭제하기
                     </button>
+                ) : (
+                    <button className={styles.deleteBtn} onClick={handleLeave}>
+                        <LogOut className={styles.deleteIcon} />
+                        공유 나가기
+                    </button>
                 )}
             </div>
 
-            <DetailTab activeTab={activeTab} onTabChange={setActiveTab} />
+            <DetailTab activeTab={activeTab} onTabChange={setActiveTab} isOwner={isOwner} />
 
             <div className={styles.content}>
                 {activeTab === 'schedule' && (
                     <div className={styles.section}>
-                        <RouteMap places={route} />
-                        <PlaceList places={route} />
+                        <NaverRouteMap maps={mapPlaces} />
+                        <PlaceList
+                            places={route}
+                            canEdit={canEdit}
+                            onAddClick={isOwner ? () => setSheetOpen(true) : undefined}
+                            onSaveOrders={canEdit ? handleSaveOrders : undefined}
+                            onDeletePlace={canEdit ? handleDeletePlace : undefined}
+                        />
                     </div>
                 )}
 
@@ -140,6 +221,13 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
                     <ShareTab myScheduleId={scheduleId} isOwner={isOwner} />
                 )}
             </div>
+
+            {sheetOpen && (
+                <AddPlaceSheet
+                    onClose={() => setSheetOpen(false)}
+                    onAdd={handleAddPlace}
+                />
+            )}
         </div>
     );
 }

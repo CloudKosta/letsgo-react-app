@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { tokenStorage } from "../api/tokenStorage";
-import { decodeToken, type AuthUser } from "../api/decodeToken";
+import { decodeToken, isTokenExpired, type AuthUser } from "../api/decodeToken";
 
 interface AuthState {
   user: AuthUser | null;
@@ -11,7 +11,13 @@ interface AuthState {
 
 const initialUser = (() => {
   const token = tokenStorage.get();
-  return token ? decodeToken(token) : null;
+  if (!token) return null;
+  if (isTokenExpired(token)) {
+    tokenStorage.clear();
+    sessionStorage.setItem("sessionExpired", "1");
+    return null;
+  }
+  return decodeToken(token);
 })();
 
 export const useAuthStore = create<AuthState>((set) => ({

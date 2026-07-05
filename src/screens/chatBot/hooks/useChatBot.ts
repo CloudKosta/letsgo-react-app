@@ -13,7 +13,6 @@ export interface Bubble {
   text: string;
 }
 
-/** 대화 로그 하나를 사용자/봇 말풍선 2개로 펼친다. */
 function toBubbles(log: ChatLog): Bubble[] {
   return [
     { key: `${log.id}-u`, role: "user", text: log.user_message },
@@ -27,7 +26,6 @@ export function useChatBot() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 이전 대화 이력 로드
   useEffect(() => {
     let ignore = false;
     getChatLogs(sessionRef.current)
@@ -51,7 +49,6 @@ export function useChatBot() {
     setBubbles((prev) => [...prev, { key: `tmp-${Date.now()}`, role: "user", text }]);
     try {
       const log = await sendChat(sessionRef.current, text);
-      // 임시 사용자 말풍선을 서버 응답(사용자+봇)으로 교체
       setBubbles((prev) => [...prev.slice(0, -1), ...toBubbles(log)]);
     } catch {
       setError("메시지 전송에 실패했습니다.");
@@ -61,7 +58,6 @@ export function useChatBot() {
     }
   }, [sending]);
 
-  // 서버 기록은 보존한 채 현재 세션만 버리고 새 세션으로 시작.
   const clear = useCallback(() => {
     sessionRef.current = resetSessionId();
     setBubbles([]);
