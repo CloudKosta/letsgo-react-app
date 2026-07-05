@@ -9,13 +9,14 @@ import NaverRouteMap from '../../../components/shared/NaverRouteMap';
 import PlaceList from './components/PlaceList';
 import AddPlaceSheet from './components/AddPlaceSheet';
 import { useMapSchedule } from '../hooks/useMapSchedule';
-import { addVisitItem, leaveSharedSchedule } from '../../../api/myScheduleApi';
+import { addVisitItem, leaveSharedSchedule, updateVisitOrders, deleteVisitItem } from '../../../api/myScheduleApi';
 import type { PlaceItem } from '../../../api/placeApi';
 import ShareTab from './components/ShareTab';
 import TodoTab from './components/TodoTab';
 import BudgetTab from './components/BudgetTab';
 import { useScheduleMutations } from '../hooks/useScheduleMutations';
 import { toast } from '../../../store/toastStore';
+import { haversineKm, type LatLng } from '../../../utils/geo';
 import styles from './MyScheduleDetail.module.css';
 
 interface MyScheduleDetailProps {
@@ -56,6 +57,49 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
             reloadMap();     // 지도 갱신
         } catch (err) {
             toast.error(err instanceof Error ? err.message : '장소 추가에 실패했습니다.');
+        }
+    };
+
+    const handleSaveOrders = async (ordered: RouteSchedule[]) => {
+        try {
+            // 원본 visitOrder로 좌표를 조회할 수 있게 map을 만든다(유효 좌표만).
+            const coordByOrder = new Map<string, LatLng>();
+            mapPlaces.forEach((m) => {
+                const lat = Number(m.mapY);
+                const lng = Number(m.mapX);
+                if (lat > 0 && lng > 0) coordByOrder.set(String(m.visitOrder), { lat, lng });
+            });
+
+            // 바뀐 순서 기준으로 '다음 장소까지 거리'를 직선거리로 재계산한다(마지막은 0).
+            const payload = ordered.map((it, i) => {
+                const cur = coordByOrder.get(String(it.visitOrder));
+                const nextItem = ordered[i + 1];
+                const next = nextItem ? coordByOrder.get(String(nextItem.visitOrder)) : undefined;
+                const distance = cur && next ? haversineKm(cur, next) : 0;
+                return {
+                    visitItemId: it.visitId,
+                    visitOrder: i + 1,
+                    distance: distance.toFixed(1),
+                };
+            });
+            await updateVisitOrders(scheduleId, payload);
+            reload?.();      // 목록(route) 갱신
+            reloadMap();     // 지도 갱신
+            toast.success('동선 순서를 저장했습니다.');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '순서 저장에 실패했습니다.');
+        }
+    };
+
+    const handleDeletePlace = async (visitItemId: string) => {
+        if (!window.confirm('이 장소를 삭제할까요?')) return;
+        try {
+            await deleteVisitItem(scheduleId, visitItemId);
+            reload?.();
+            reloadMap();
+            toast.success('장소를 삭제했습니다.');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '장소 삭제에 실패했습니다.');
         }
     };
 
@@ -143,13 +187,19 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
                 )}
             </div>
 
-            <DetailTab activeTab={activeTab} onTabChange={setActiveTab} />
+            <DetailTab activeTab={activeTab} onTabChange={setActiveTab} isOwner={isOwner} />
 
             <div className={styles.content}>
                 {activeTab === 'schedule' && (
                     <div className={styles.section}>
                         <NaverRouteMap maps={mapPlaces} />
-                        <PlaceList places={route} onAddClick={isOwner ? () => setSheetOpen(true) : undefined} />
+                        <PlaceList
+                            places={route}
+                            canEdit={canEdit}
+                            onAddClick={isOwner ? () => setSheetOpen(true) : undefined}
+                            onSaveOrders={canEdit ? handleSaveOrders : undefined}
+                            onDeletePlace={canEdit ? handleDeletePlace : undefined}
+                        />
                     </div>
                 )}
 

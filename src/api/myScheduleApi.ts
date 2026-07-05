@@ -16,6 +16,7 @@ interface MyScheduleVO {
   placeTitle: string;
   addr1: string;
   firstImage: string;
+  ownerId: string;
 }
 
 interface PageResponse<T> {
@@ -48,6 +49,7 @@ function toMySchedule(vo: MyScheduleVO): MySchedule {
     placeCount: places.length,
     placeTitle: places,
     isShared: vo.isShared === "1" || vo.isShared === "true",
+    ownerId: vo.ownerId,
   };
 }
 
@@ -81,6 +83,35 @@ export async function addVisitItem(
     return res.data;
   } catch (e) {
     throw new Error(getErrorMessage(e, "장소 추가에 실패했습니다."), { cause: e });
+  }
+}
+
+export interface VisitOrderPayload {
+  visitItemId: string;
+  visitOrder: number;
+  distance: string;
+}
+
+/** 방문 장소들의 순서를 일괄 갱신한다. 쓰기 권한(OWNER/W) 필요. */
+export async function updateVisitOrders(
+  scheduleId: string,
+  orders: VisitOrderPayload[]
+): Promise<boolean> {
+  try {
+    const res = await api.put<boolean>(`/myschedule/api/${scheduleId}/visit/orders`, orders);
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "순서 저장에 실패했습니다."), { cause: e });
+  }
+}
+
+/** 방문 장소(visit_item) 하나를 삭제한다. 쓰기 권한(OWNER/W) 필요. */
+export async function deleteVisitItem(scheduleId: string, visitItemId: string): Promise<boolean> {
+  try {
+    const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/visit/${visitItemId}`);
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "장소 삭제에 실패했습니다."), { cause: e });
   }
 }
 
@@ -135,6 +166,16 @@ export async function setCompanionPermission(
     return res.data;
   } catch (e) {
     throw new Error(getErrorMessage(e, "권한 변경에 실패했습니다."), { cause: e });
+  }
+}
+
+/** 소유자가 동반자(공유 대상)를 제거한다. */
+export async function removeCompanion(scheduleId: string, sharedUserId: string): Promise<boolean> {
+  try {
+    const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/companion/${sharedUserId}`);
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "동반자 삭제에 실패했습니다."), { cause: e });
   }
 }
 

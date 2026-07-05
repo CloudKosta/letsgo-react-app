@@ -12,12 +12,16 @@ const tabs: { key: DetailTabType; label: string }[] = [
 interface DetailTabProps {
     activeTab: DetailTabType;
     onTabChange: (tab: DetailTabType) => void;
+    isOwner?: boolean;
 }
 
-function DetailTab({ activeTab, onTabChange }: DetailTabProps) {
+function DetailTab({ activeTab, onTabChange, isOwner = false }: DetailTabProps) {
+    // 공유받은 일정(비소유자)에서는 공유 탭을 노출하지 않는다.
+    const visibleTabs = isOwner ? tabs : tabs.filter((tab) => tab.key !== 'share');
+
     return (
         <div className={styles.wrapper}>
-            {tabs.map((tab) => (
+            {visibleTabs.map((tab) => (
                 <button
                     key={tab.key}
                     onClick={() => onTabChange(tab.key)}

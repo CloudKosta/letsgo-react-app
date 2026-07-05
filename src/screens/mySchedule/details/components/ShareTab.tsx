@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserPlus, Send } from 'lucide-react';
+import { UserPlus, Send, X } from 'lucide-react';
 import { useCompanions } from '../../hooks/useCompanions';
 import { toast } from '../../../../store/toastStore';
 import styles from './css/ShareTab.module.css';
@@ -17,7 +17,7 @@ const permissionLabel: Record<string, string> = {
 
 function ShareTab({ myScheduleId, isOwner = false }: ShareTabProps) {
     const navigate = useNavigate();
-    const { companions, publishing, publish, addCompanion, changePermission } = useCompanions(myScheduleId);
+    const { companions, publishing, publish, addCompanion, changePermission, removeCompanion } = useCompanions(myScheduleId);
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [adding, setAdding] = useState(false);
     const [newUserId, setNewUserId] = useState('');
@@ -54,6 +54,16 @@ function ShareTab({ myScheduleId, isOwner = false }: ShareTabProps) {
             toast.success('권한을 변경했습니다.');
         } catch (err) {
             toast.error(err instanceof Error ? err.message : '권한 변경에 실패했습니다.');
+        }
+    };
+
+    const handleRemove = async (sharedUserId: string, name: string) => {
+        if (!window.confirm(`'${name}' 님을 동반자에서 제외할까요?`)) return;
+        try {
+            await removeCompanion(sharedUserId);
+            toast.success('동반자를 제외했습니다.');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '동반자 삭제에 실패했습니다.');
         }
     };
 
@@ -98,14 +108,24 @@ function ShareTab({ myScheduleId, isOwner = false }: ShareTabProps) {
                                 <span className={styles.avatar}>{c.name.charAt(0)}</span>
                                 <span className={styles.name}>{c.name}</span>
                                 {isOwner ? (
-                                    <select
-                                        value={c.permission}
-                                        onChange={(e) => handlePermissionChange(c.userId, e.target.value)}
-                                        className="ml-auto bg-[#f8f9fa] border border-[#e9ecef] rounded-lg px-2 py-1 text-[13px] outline-none focus:border-[#ff7a00]"
-                                    >
-                                        <option value="R">읽기 가능</option>
-                                        <option value="W">편집 가능</option>
-                                    </select>
+                                    <>
+                                        <select
+                                            value={c.permission}
+                                            onChange={(e) => handlePermissionChange(c.userId, e.target.value)}
+                                            className="ml-auto bg-[#f8f9fa] border border-[#e9ecef] rounded-lg px-2 py-1 text-[13px] outline-none focus:border-[#ff7a00]"
+                                        >
+                                            <option value="R">읽기 가능</option>
+                                            <option value="W">편집 가능</option>
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemove(c.userId, c.name)}
+                                            className={styles.removeBtn}
+                                            aria-label={`${c.name} 동반자 제외`}
+                                        >
+                                            <X className={styles.removeIcon} />
+                                        </button>
+                                    </>
                                 ) : (
                                     <span className={styles.permission}>
                                         {permissionLabel[c.permission] ?? c.permission}

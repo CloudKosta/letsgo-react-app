@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { toast } from '../../store/toastStore';
 import Header from './Header';
 import Navbar from './NavBar';
 import MyScheduleLayout from '../../screens/mySchedule/MyScheduleLayout';
@@ -13,6 +15,14 @@ import Toaster from '../shared/Toaster';
 function PhoneLayoutContent() {
     const location = useLocation();
     const isUserPage = location.pathname.startsWith('/user');
+
+    // 세션 만료로 로그아웃된 경우, 새로고침 이후 한 번 안내 토스트를 띄운다.
+    useEffect(() => {
+        if (sessionStorage.getItem('sessionExpired')) {
+            sessionStorage.removeItem('sessionExpired');
+            toast.error('세션이 만료되었습니다. 다시 로그인해 주세요.');
+        }
+    }, []);
 
     return (
         <div className="flex flex-col h-screen">

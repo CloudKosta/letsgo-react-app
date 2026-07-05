@@ -4,6 +4,7 @@ import {
   getCompanions,
   addCompanion as apiAddCompanion,
   setCompanionPermission as apiSetCompanionPermission,
+  removeCompanion as apiRemoveCompanion,
 } from "../../../api/myScheduleApi";
 import { publishToSharedBoard } from "../../../api/shareApi";
 
@@ -44,6 +45,11 @@ export function useCompanions(scheduleId: string) {
     await refresh();
   };
 
+  const removeCompanion = async (sharedUserId: string) => {
+    await apiRemoveCompanion(scheduleId, sharedUserId);
+    await refresh();
+  };
+
   const publish = async (isAnonymous: boolean): Promise<string> => {
     setPublishing(true);
     try {
@@ -53,5 +59,5 @@ export function useCompanions(scheduleId: string) {
     }
   };
 
-  return { companions, publishing, publish, addCompanion, changePermission };
+  return { companions, publishing, publish, addCompanion, changePermission, removeCompanion };
 }

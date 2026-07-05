@@ -7,6 +7,7 @@ export interface MySchedule {
     placeCount: number;
     placeTitle: string[];
     isShared: boolean;
+    ownerId: string;
 }
 
 
