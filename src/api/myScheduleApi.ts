@@ -5,6 +5,7 @@ import type {
   MySchedule,
   ScheduleDetailInfo,
   RouteSchedule,
+  MapSchedule,
 } from "../types";
 
 interface MyScheduleVO {
@@ -57,6 +58,12 @@ export async function getMyScheduleList(): Promise<MySchedule[]> {
 
 export async function getScheduleDetail(scheduleId: number): Promise<ScheduleDetailResponse> {
   const res = await api.get<ScheduleDetailResponse>(`/myschedule/api/${scheduleId}/detail`);
+  return res.data;
+}
+
+/** 일정 경로 좌표(mapX/mapY) 목록. 네이버 지도 표시용. */
+export async function getMapSchedule(scheduleId: number): Promise<MapSchedule[]> {
+  const res = await api.get<MapSchedule[]>(`/myschedule/api/${scheduleId}/mapSchedule`);
   return res.data;
 }
 

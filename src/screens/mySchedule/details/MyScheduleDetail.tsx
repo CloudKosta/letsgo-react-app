@@ -5,8 +5,9 @@ import type { ScheduleDetailInfo, RouteSchedule } from '../../../types';
 import DetailTab from './components/DetailTab';
 import type { DetailTabType } from './components/DetailTab';
 import CalendarButton from './components/CalendarButton';
-import RouteMap from './components/RouteMap';
+import NaverRouteMap from '../../../components/shared/NaverRouteMap';
 import PlaceList from './components/PlaceList';
+import { useMapSchedule } from '../hooks/useMapSchedule';
 import ShareTab from './components/ShareTab';
 import TodoTab from './components/TodoTab';
 import BudgetTab from './components/BudgetTab';
@@ -27,6 +28,7 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
     const navigate = useNavigate();
     const { saveTodo, saveBudget, saveStartAt, removeSchedule } = useScheduleMutations(scheduleId);
     const [activeTab, setActiveTab] = useState<DetailTabType>('schedule');
+    const mapPlaces = useMapSchedule(scheduleId);
 
     if (loading) {
         return <div className={styles.notFound}>불러오는 중...</div>;
@@ -115,7 +117,7 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
             <div className={styles.content}>
                 {activeTab === 'schedule' && (
                     <div className={styles.section}>
-                        <RouteMap places={route} />
+                        <NaverRouteMap maps={mapPlaces} />
                         <PlaceList places={route} />
                     </div>
                 )}
