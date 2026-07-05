@@ -26,7 +26,6 @@ export function decodeToken(token: string): AuthUser | null {
   };
 }
 
-/** JWT의 exp(초 단위)를 기준으로 만료 여부를 판단한다. 파싱 불가/무효 토큰도 만료로 간주. */
 export function isTokenExpired(token: string): boolean {
   const claims = parseClaims(token);
   if (!claims || typeof claims.exp !== "number") return true;

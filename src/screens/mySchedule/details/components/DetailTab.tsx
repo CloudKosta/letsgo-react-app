@@ -16,7 +16,6 @@ interface DetailTabProps {
 }
 
 function DetailTab({ activeTab, onTabChange, isOwner = false }: DetailTabProps) {
-    // 공유받은 일정(비소유자)에서는 공유 탭을 노출하지 않는다.
     const visibleTabs = isOwner ? tabs : tabs.filter((tab) => tab.key !== 'share');
 
     return (

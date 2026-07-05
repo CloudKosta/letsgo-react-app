@@ -38,7 +38,7 @@
 
 .handle {
     @apply w-7 h-7 flex items-center justify-center rounded-md border-none bg-transparent text-gray-300 cursor-grab;
-    touch-action: none; /* 핸들에서 터치 드래그 시 리스트 스크롤과 충돌 방지 */
+    touch-action: none;
 }
 
 .handle:hover {

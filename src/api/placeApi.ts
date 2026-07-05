@@ -16,7 +16,6 @@ const ENDPOINT: Record<PlaceTab, string> = {
   RESTAURANT: "/restaurantListAjax",
 };
 
-/** 탭(레저/숙박/음식)별 장소 목록 검색. */
 export async function searchPlaces(tab: PlaceTab, keyword: string): Promise<PlaceItem[]> {
   const res = await api.get<PlaceItem[]>(ENDPOINT[tab], {
     params: { category: null, keyword: keyword || null },

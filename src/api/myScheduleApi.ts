@@ -63,13 +63,11 @@ export async function getScheduleDetail(scheduleId: string): Promise<ScheduleDet
   return res.data;
 }
 
-/** 일정 경로 좌표(mapX/mapY) 목록. 네이버 지도 표시용. */
 export async function getMapSchedule(scheduleId: string): Promise<MapSchedule[]> {
   const res = await api.get<MapSchedule[]>(`/myschedule/api/${scheduleId}/mapSchedule`);
   return res.data;
 }
 
-/** 일정에 방문 장소 추가(visit_item insert). owner 전용. */
 export async function addVisitItem(
   scheduleId: string,
   placeId: number,
@@ -92,7 +90,6 @@ export interface VisitOrderPayload {
   distance: string;
 }
 
-/** 방문 장소들의 순서를 일괄 갱신한다. 쓰기 권한(OWNER/W) 필요. */
 export async function updateVisitOrders(
   scheduleId: string,
   orders: VisitOrderPayload[]
@@ -105,7 +102,6 @@ export async function updateVisitOrders(
   }
 }
 
-/** 방문 장소(visit_item) 하나를 삭제한다. 쓰기 권한(OWNER/W) 필요. */
 export async function deleteVisitItem(scheduleId: string, visitItemId: string): Promise<boolean> {
   try {
     const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/visit/${visitItemId}`);
@@ -169,7 +165,6 @@ export async function setCompanionPermission(
   }
 }
 
-/** 소유자가 동반자(공유 대상)를 제거한다. */
 export async function removeCompanion(scheduleId: string, sharedUserId: string): Promise<boolean> {
   try {
     const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/companion/${sharedUserId}`);
@@ -188,7 +183,6 @@ export async function deleteSchedule(scheduleId: string): Promise<boolean> {
   }
 }
 
-/** 공유받은 일정에서 나가기(내 공유 해제). 소유자는 불가. */
 export async function leaveSharedSchedule(scheduleId: string): Promise<boolean> {
   try {
     const res = await api.delete<boolean>(`/myschedule/api/${scheduleId}/leave`);

@@ -14,7 +14,6 @@ interface Point {
   title: string;
 }
 
-/** mapX(경도)/mapY(위도)를 방문 순서대로 좌표 배열로 변환(빈값/0 좌표 제외). */
 function toPoints(maps: MapSchedule[]): Point[] {
   return [...maps]
     .sort((a, b) => Number(a.visitOrder) - Number(b.visitOrder))
@@ -29,7 +28,6 @@ function markerIcon(label: number) {
   };
 }
 
-/** 네이버 지도에 일정 동선(마커 + 경로선)을 표시하는 재사용 컴포넌트. */
 export default function NaverRouteMap({ maps, height = 224 }: NaverRouteMapProps) {
   const { ready, error } = useNaverMaps();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -44,7 +42,6 @@ export default function NaverRouteMap({ maps, height = 224 }: NaverRouteMapProps
     const points = toPoints(maps);
     if (points.length === 0) return;
 
-    // 지도는 컨테이너당 한 번만 생성(재생성 시 마커/타일이 겹쳐 쌓이는 것 방지).
     if (!mapRef.current) {
       mapRef.current = new naver.maps.Map(containerRef.current, {
         center: new naver.maps.LatLng(points[0].lat, points[0].lng),
@@ -53,7 +50,6 @@ export default function NaverRouteMap({ maps, height = 224 }: NaverRouteMapProps
     }
     const map = mapRef.current;
 
-    // 이전 마커/경로선 제거 후 다시 그린다.
     overlaysRef.current.forEach((o) => o.setMap(null));
     overlaysRef.current = [];
 
@@ -74,7 +70,6 @@ export default function NaverRouteMap({ maps, height = 224 }: NaverRouteMapProps
     }
   }, [ready, maps]);
 
-  // 언마운트 시에만 지도 파기.
   useEffect(() => {
     return () => {
       overlaysRef.current.forEach((o) => o.setMap(null));

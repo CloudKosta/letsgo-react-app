@@ -8,7 +8,6 @@
     @apply w-full rounded-2xl border border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-400;
 }
 
-/* naver.maps.Marker content(전역 DOM)라 index.css @layer 밖에서도 적용되도록 소재. */
 .naver-route-marker {
     width: 28px;
     height: 28px;

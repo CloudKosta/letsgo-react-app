@@ -11,8 +11,6 @@ interface ScheduleCardProps {
 function ScheduleCard({ schedule }: ScheduleCardProps) {
     const navigate = useNavigate();
     const myUserId = useAuthStore((s) => s.user?.userID);
-    // ownerId가 있고 내 id와 확실히 다를 때만 '공유받음'으로 본다.
-    // (ownerId가 비어있으면 판단 불가 → 기존 '동반자 추가됨' 로직으로 폴백)
     const isReceived = !!schedule.ownerId && !!myUserId && schedule.ownerId !== myUserId;
 
     return (

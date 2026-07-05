@@ -12,7 +12,6 @@ interface AuthState {
 const initialUser = (() => {
   const token = tokenStorage.get();
   if (!token) return null;
-  // 이미 만료된 토큰이면 로그아웃 상태로 시작하고, 안내 토스트 플래그를 남긴다.
   if (isTokenExpired(token)) {
     tokenStorage.clear();
     sessionStorage.setItem("sessionExpired", "1");

@@ -1,7 +1,7 @@
 .toaster {
     position: fixed;
     left: 50%;
-    bottom: 88px; /* 하단 네비바(64px) 위로 띄운다 */
+    bottom: 88px;
     transform: translateX(-50%);
     z-index: 100;
     display: flex;

@@ -17,24 +17,20 @@ function PlaceList({ places, canEdit = false, onAddClick, onSaveOrders, onDelete
     const [dragIndex, setDragIndex] = useState<number | null>(null);
     const listRef = useRef<HTMLDivElement>(null);
 
-    // 부모에서 route가 갱신되면(저장/삭제 후 reload) 로컬 순서를 동기화한다.
     useEffect(() => {
         setItems(places);
     }, [places]);
 
-    // 로컬 순서가 원본과 달라졌는지(저장 필요 여부).
     const dirty =
         items.length === places.length &&
         items.some((it, i) => it.visitId !== places[i]?.visitId);
 
-    // 드래그 핸들을 잡으면 포인터를 캡처해 리스트 밖으로 나가도 이동을 추적한다.
     const handlePointerDown = (e: React.PointerEvent, index: number) => {
         e.preventDefault();
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
         setDragIndex(index);
     };
 
-    // 포인터 Y 위치가 어느 행의 중앙을 넘었는지 계산해 실시간으로 순서를 바꾼다.
     const handlePointerMove = (e: React.PointerEvent) => {
         if (dragIndex === null || !listRef.current) return;
         const rows = Array.from(listRef.current.querySelectorAll<HTMLElement>('[data-row]'));
@@ -66,7 +62,7 @@ function PlaceList({ places, canEdit = false, onAddClick, onSaveOrders, onDelete
         try {
             (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
         } catch {
-            /* 이미 해제된 경우 무시 */
+            setDragIndex(null);
         }
         setDragIndex(null);
     };

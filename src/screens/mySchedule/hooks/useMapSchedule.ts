@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { getMapSchedule } from "../../../api/myScheduleApi";
 import type { MapSchedule } from "../../../types";
 
-/** 일정의 경로 좌표(mapX/mapY) 목록을 불러온다. reload로 갱신 가능. */
 export function useMapSchedule(scheduleId?: string) {
   const [maps, setMaps] = useState<MapSchedule[]>([]);
   const [reloadKey, setReloadKey] = useState(0);

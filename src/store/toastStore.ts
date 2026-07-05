@@ -29,7 +29,6 @@ export const useToastStore = create<ToastState>((set) => ({
   dismiss: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
 }));
 
-/** 컴포넌트 밖(핸들러/서비스)에서도 호출할 수 있는 단축 API. */
 export const toast = {
   success: (message: string) => useToastStore.getState().show("success", message),
   error: (message: string) => useToastStore.getState().show("error", message),

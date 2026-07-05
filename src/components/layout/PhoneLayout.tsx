@@ -16,7 +16,6 @@ function PhoneLayoutContent() {
     const location = useLocation();
     const isUserPage = location.pathname.startsWith('/user');
 
-    // 세션 만료로 로그아웃된 경우, 새로고침 이후 한 번 안내 토스트를 띄운다.
     useEffect(() => {
         if (sessionStorage.getItem('sessionExpired')) {
             sessionStorage.removeItem('sessionExpired');

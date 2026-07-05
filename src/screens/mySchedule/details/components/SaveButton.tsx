@@ -4,7 +4,6 @@ interface SaveButtonProps {
     label?: string;
 }
 
-/** 편집 탭 공용 저장 버튼. 우측 정렬, 블루 테마. */
 export default function SaveButton({ onClick, saving, label = '저장' }: SaveButtonProps) {
     return (
         <div className="flex justify-end">

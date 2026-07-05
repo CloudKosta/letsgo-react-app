@@ -3,9 +3,8 @@ export interface LatLng {
   lng: number;
 }
 
-/** 두 좌표 사이의 대원거리(km). 직선거리 기준. */
 export function haversineKm(a: LatLng, b: LatLng): number {
-  const R = 6371; // 지구 반지름(km)
+  const R = 6371;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
   const dLat = toRad(b.lat - a.lat);
   const dLng = toRad(b.lng - a.lng);

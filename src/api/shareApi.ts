@@ -13,11 +13,6 @@ function getErrorMessage(e: unknown, fallback: string): string {
     return fallback;
 }
 
-/**
- * 내 일정을 공개게시판에 게시한다. owner 전용.
- * 백엔드 ShareRequest.isAnonymous 는 int(0/1) 이므로 boolean 을 변환해 보낸다.
- * @returns 생성된 게시글 id(postId)
- */
 export async function publishToSharedBoard({ myScheduleId, isAnonymous }: PublishRequest): Promise<string> {
     try {
         const res = await api.post<string>(`/myschedule/api/${myScheduleId}/share`, {

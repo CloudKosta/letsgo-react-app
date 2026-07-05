@@ -53,8 +53,8 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
     const handleAddPlace = async (place: PlaceItem) => {
         try {
             await addVisitItem(scheduleId, place.placeId, route.length + 1);
-            reload?.();      // 목록(route) 갱신
-            reloadMap();     // 지도 갱신
+            reload?.();
+            reloadMap();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : '장소 추가에 실패했습니다.');
         }
@@ -62,7 +62,6 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
 
     const handleSaveOrders = async (ordered: RouteSchedule[]) => {
         try {
-            // 원본 visitOrder로 좌표를 조회할 수 있게 map을 만든다(유효 좌표만).
             const coordByOrder = new Map<string, LatLng>();
             mapPlaces.forEach((m) => {
                 const lat = Number(m.mapY);
@@ -70,7 +69,6 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
                 if (lat > 0 && lng > 0) coordByOrder.set(String(m.visitOrder), { lat, lng });
             });
 
-            // 바뀐 순서 기준으로 '다음 장소까지 거리'를 직선거리로 재계산한다(마지막은 0).
             const payload = ordered.map((it, i) => {
                 const cur = coordByOrder.get(String(it.visitOrder));
                 const nextItem = ordered[i + 1];
@@ -83,8 +81,8 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
                 };
             });
             await updateVisitOrders(scheduleId, payload);
-            reload?.();      // 목록(route) 갱신
-            reloadMap();     // 지도 갱신
+            reload?.();
+            reloadMap();
             toast.success('동선 순서를 저장했습니다.');
         } catch (err) {
             toast.error(err instanceof Error ? err.message : '순서 저장에 실패했습니다.');

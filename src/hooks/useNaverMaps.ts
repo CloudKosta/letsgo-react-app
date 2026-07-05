@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 const CLIENT_ID = import.meta.env.VITE_NAVER_MAP_CLIENT_ID;
 const SCRIPT_ID = "naver-maps-sdk";
 
-/** SDK 스크립트를 앱 전체에서 한 번만 로드하기 위한 공유 Promise. */
 let loadPromise: Promise<void> | null = null;
 
 function loadSdk(): Promise<void> {
@@ -26,7 +25,6 @@ function loadSdk(): Promise<void> {
   return loadPromise;
 }
 
-/** 네이버 지도 SDK 로드 상태. { ready, error } */
 export function useNaverMaps() {
   const [ready, setReady] = useState<boolean>(!!window.naver?.maps);
   const [error, setError] = useState<string | null>(null);

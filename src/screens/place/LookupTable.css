@@ -35,9 +35,7 @@
 .lookup-button-group {
     @apply flex overflow-x-auto gap-2 pb-1.5 scrollbar-none -mx-5 px-5;
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
 }
 
 
