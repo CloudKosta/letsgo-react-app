@@ -8,6 +8,7 @@ import Cart from '../../screens/cart/Cart';
 import ChatBot from '../../screens/chatBot/ChatBot';
 import UserApp from '../../screens/User/UserApp';
 import OAuthCallback from '../../screens/User/OAuthCallback';
+import Toaster from '../shared/Toaster';
 
 function PhoneLayoutContent() {
     const location = useLocation();
@@ -30,6 +31,7 @@ function PhoneLayoutContent() {
             </main>
 
             {!isUserPage && <Navbar />}
+            <Toaster />
         </div>
     );
 }

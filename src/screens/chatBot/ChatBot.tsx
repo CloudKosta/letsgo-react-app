@@ -5,6 +5,9 @@ import MessageBubble from "./components/MessageBubble";
 import { useChatBot } from "./hooks/useChatBot";
 import "./ChatBot.css";
 
+const GREETING =
+    "안녕하세요, LetsGo의 레저스포츠 챗봇입니다. 레저스포츠 설명이 듣고 싶거나, 이색적이고 특별한 레저스포츠 경험을 원하면 자유롭게 질문하세요!";
+
 export default function ChatBot() {
     const { bubbles, sending, error, send, clear } = useChatBot();
     const [text, setText] = useState("");
@@ -23,6 +26,7 @@ export default function ChatBot() {
         <div className="chatbot-container">
             <ChatBotHeader onClear={clear} />
             <div className="chatbot-messages">
+                <MessageBubble role="bot" text={GREETING} />
                 {bubbles.map((b) => (
                     <MessageBubble key={b.key} role={b.role} text={b.text} />
                 ))}

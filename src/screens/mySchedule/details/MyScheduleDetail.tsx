@@ -15,6 +15,7 @@ import ShareTab from './components/ShareTab';
 import TodoTab from './components/TodoTab';
 import BudgetTab from './components/BudgetTab';
 import { useScheduleMutations } from '../hooks/useScheduleMutations';
+import { toast } from '../../../store/toastStore';
 import styles from './MyScheduleDetail.module.css';
 
 interface MyScheduleDetailProps {
@@ -54,7 +55,7 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
             reload?.();      // 목록(route) 갱신
             reloadMap();     // 지도 갱신
         } catch (err) {
-            alert(err instanceof Error ? err.message : '장소 추가에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '장소 추가에 실패했습니다.');
         }
     };
 
@@ -65,7 +66,7 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
             await saveStartAt(next);
         } catch (err) {
             patchInfo?.({ startAt: prev });
-            alert(err instanceof Error ? err.message : '날짜 저장에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '날짜 저장에 실패했습니다.');
         }
     };
 
@@ -73,9 +74,9 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
         try {
             await saveTodo(content);
             patchInfo?.({ todoDetail: content });
-            alert('할 일이 저장되었습니다.');
+            toast.success('할 일이 저장되었습니다.');
         } catch (err) {
-            alert(err instanceof Error ? err.message : '할 일 저장에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '할 일 저장에 실패했습니다.');
         }
     };
 
@@ -83,9 +84,9 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
         try {
             await saveBudget(content);
             patchInfo?.({ budgetDetail: content });
-            alert('예산이 저장되었습니다.');
+            toast.success('예산이 저장되었습니다.');
         } catch (err) {
-            alert(err instanceof Error ? err.message : '예산 저장에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '예산 저장에 실패했습니다.');
         }
     };
 
@@ -109,7 +110,7 @@ function MyScheduleDetail({ scheduleId, info, route = [], permission, loading, e
             await leaveSharedSchedule(scheduleId);
             navigate('/mySchedule');
         } catch (err) {
-            alert(err instanceof Error ? err.message : '공유 나가기에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '공유 나가기에 실패했습니다.');
         }
     };
 

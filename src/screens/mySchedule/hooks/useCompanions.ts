@@ -44,10 +44,10 @@ export function useCompanions(scheduleId: string) {
     await refresh();
   };
 
-  const publish = async (isAnonymous: boolean) => {
+  const publish = async (isAnonymous: boolean): Promise<string> => {
     setPublishing(true);
     try {
-      await publishToSharedBoard({ myScheduleId: scheduleId, isAnonymous });
+      return await publishToSharedBoard({ myScheduleId: scheduleId, isAnonymous });
     } finally {
       setPublishing(false);
     }

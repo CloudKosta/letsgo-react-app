@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserPlus, Send } from 'lucide-react';
 import { useCompanions } from '../../hooks/useCompanions';
+import { toast } from '../../../../store/toastStore';
 import styles from './css/ShareTab.module.css';
 
 interface ShareTabProps {
@@ -14,13 +16,22 @@ const permissionLabel: Record<string, string> = {
 };
 
 function ShareTab({ myScheduleId, isOwner = false }: ShareTabProps) {
+    const navigate = useNavigate();
     const { companions, publishing, publish, addCompanion, changePermission } = useCompanions(myScheduleId);
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [adding, setAdding] = useState(false);
     const [newUserId, setNewUserId] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
-    const handlePublish = () => publish(isAnonymous);
+    const handlePublish = async () => {
+        try {
+            const postId = await publish(isAnonymous);
+            toast.success('공개게시판에 게시되었습니다.');
+            navigate(`/postSchedule/${postId}`);
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : '게시에 실패했습니다.');
+        }
+    };
 
     const handleAdd = async () => {
         if (newUserId.trim() === '') return;
@@ -29,8 +40,9 @@ function ShareTab({ myScheduleId, isOwner = false }: ShareTabProps) {
             await addCompanion(newUserId.trim());
             setNewUserId('');
             setAdding(false);
+            toast.success('동반자를 추가했습니다.');
         } catch (err) {
-            alert(err instanceof Error ? err.message : '동반자 추가에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '동반자 추가에 실패했습니다.');
         } finally {
             setSubmitting(false);
         }
@@ -39,8 +51,9 @@ function ShareTab({ myScheduleId, isOwner = false }: ShareTabProps) {
     const handlePermissionChange = async (sharedUserId: string, permission: string) => {
         try {
             await changePermission(sharedUserId, permission);
+            toast.success('권한을 변경했습니다.');
         } catch (err) {
-            alert(err instanceof Error ? err.message : '권한 변경에 실패했습니다.');
+            toast.error(err instanceof Error ? err.message : '권한 변경에 실패했습니다.');
         }
     };
 
