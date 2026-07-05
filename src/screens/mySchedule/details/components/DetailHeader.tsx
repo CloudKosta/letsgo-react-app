@@ -1,12 +1,11 @@
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import type { MySchedule } from '../../../../types';
 
 interface DetailHeaderProps {
-    schedule?: MySchedule;
+    title?: string;
 }
 
-function DetailHeader({ schedule }: DetailHeaderProps) {
+function DetailHeader({ title }: DetailHeaderProps) {
     const navigate = useNavigate();
 
     return (
@@ -15,11 +14,8 @@ function DetailHeader({ schedule }: DetailHeaderProps) {
                 <button onClick={() => navigate('/mySchedule')}>
                     <ArrowLeft size={24} />
                 </button>
-                <h1 className="font-bold text-lg">{schedule?.myScheduleTitle ?? ''}</h1>
+                <h1 className="font-bold text-lg">{title ?? ''}</h1>
             </div>
-            <button>
-                <Trash2 size={20} />
-            </button>
         </header>
     );
 }

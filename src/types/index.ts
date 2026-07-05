@@ -1,9 +1,11 @@
+export type { MapSchedule, PostSchedule, PostScheduleDetail, RouteSchedule } from './postSchedule';
+
 export interface MySchedule {
-    myScheduleId: number;
+    myScheduleId: string;
     myScheduleTitle: string;
     startAt: string;
     placeCount: number;
-    tags: string[];
+    placeTitle: string[];
     isShared: boolean;
 }
 
@@ -17,8 +19,22 @@ export interface MyScheduleDetail {
     visitOrder: string;
     placeId: string;
     title: string;
-    distanceToNext: DoubleRange;
+    distanceToNext: number;
     scheduleType: string;
+}
+
+export interface Colleague {
+    userId: string;
+    name: string;
+    email: string;
+    permission: string;
+}
+
+export interface ScheduleDetailInfo {
+    scheduleTitle: string;
+    startAt: string;
+    budgetDetail: string;
+    todoDetail: string;
 }
 
 
