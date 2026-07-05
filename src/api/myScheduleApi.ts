@@ -156,3 +156,13 @@ export async function leaveSharedSchedule(scheduleId: string): Promise<boolean> 
     throw new Error(getErrorMessage(e, "공유 나가기에 실패했습니다."), { cause: e });
   }
 }
+
+export async function createSchedule(scheduleId: string, title: string): Promise<boolean> {
+  try {
+    const res = await api.post<boolean>("/myschedule/api", { scheduleId, title });
+    return res.data;
+  } catch (e) {
+    throw new Error(getErrorMessage(e, "일정 생성에 실패했습니다."), { cause: e });
+  }
+}
+
