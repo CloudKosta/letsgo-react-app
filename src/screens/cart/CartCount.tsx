@@ -1,6 +1,8 @@
 import './CartCount.css';
+import { useCartStore } from "../../store/cartStore";
 
 export default function CartCount() {
+    const cartItems = useCartStore((state) => state.cartItems);
     return (
         <div className="cart-count-container">
             <div className="cart-count-info">
@@ -10,7 +12,7 @@ export default function CartCount() {
                     </div>
                 </div>
                 <div className="cart-count-value">
-                    4개
+                    {cartItems.length}개
                 </div>
             </div>
         </div >
