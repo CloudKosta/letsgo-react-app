@@ -1,0 +1,33 @@
+@reference "tailwindcss";
+
+.post-schedule-detail-page {
+  @apply flex flex-col min-h-0 flex-1;
+}
+
+.post-schedule-detail-header {
+  @apply sticky top-0 h-16 bg-white border-b border-gray-200 px-4 flex items-center gap-2 z-10;
+}
+
+.post-schedule-detail-back-btn {
+  @apply shrink-0 border-none bg-transparent cursor-pointer p-0 flex items-center justify-center text-gray-900;
+}
+
+.post-schedule-detail-title {
+  @apply min-w-0 flex-1 text-lg font-bold text-gray-900 truncate;
+}
+
+.post-schedule-detail-content {
+  @apply flex-1 overflow-y-auto;
+}
+
+.post-schedule-detail-tab-content {
+  @apply px-5 py-4;
+}
+
+.post-schedule-detail-section {
+  @apply flex flex-col gap-4;
+}
+
+.post-schedule-detail-not-found {
+  @apply flex items-center justify-center py-16 text-sm text-gray-400;
+}

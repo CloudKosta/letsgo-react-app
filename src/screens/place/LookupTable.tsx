@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Compass, Hotel, Utensils } from "lucide-react";
+import type { TabType, LookupTableProps } from "./interface";
 import "./LookupTable.css";
 
 const CATEGORY_MAP = {
@@ -21,12 +21,14 @@ const CATEGORY_MAP = {
     }
 } as const;
 
-type TabType = keyof typeof CATEGORY_MAP;
-
-export default function LookupTable() {
-    const [currentTab, setCurrentTab] = useState<TabType>('LEISURE');
-    const [selectedMajor, setSelectedMajor] = useState('');
-    const [selectedSub, setSelectedSub] = useState('');
+export default function LookupTable({
+    currentTab,
+    setCurrentTab,
+    selectedMajor,
+    setSelectedMajor,
+    selectedSub,
+    setSelectedSub
+}: LookupTableProps) {
 
     const handleTabChange = (tab: TabType) => {
         setCurrentTab(tab);
@@ -47,7 +49,6 @@ export default function LookupTable() {
     const subCategories = selectedMajor
         ? (CATEGORY_MAP[currentTab] as Record<string, readonly string[]>)[selectedMajor]
         : [];
-
 
     return (
         <div className="lookup-container">
@@ -124,6 +125,3 @@ export default function LookupTable() {
         </div>
     );
 }
-
-
-

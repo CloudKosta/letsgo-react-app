@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import "./DropDown.css";
+import "./css/DropDown.css";
 import { sortOptions, type SortType } from "../constants/sortOptions";
 import { useClickOutside } from "../../../hooks/useClickOutside";
 

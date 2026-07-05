@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Input from "./components/Input";
 import Button from "./components/Button";
 import { findId } from "../../api/userApi";
+import "./GetId.css";
 
 function GetId() {
     const [name, setName] = useState("");
@@ -11,7 +12,7 @@ function GetId() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (name.trim() === "" || email.trim() === "") {
@@ -33,12 +34,12 @@ function GetId() {
     };
 
     return (
-        <div className="flex flex-col justify-center w-full max-w-[390px] mx-auto px-6 py-[30px] bg-white box-border">
-            <div className="text-center mb-8">
-                <h2 className="text-2xl font-extrabold text-[#222222]">아이디 찾기</h2>
+        <div className="user-form-container">
+            <div className="user-form-header">
+                <h2 className="user-form-title">아이디 찾기</h2>
             </div>
 
-            <p className="text-[13px] text-[#868e96] mb-5 leading-relaxed">
+            <p className="getid-description">
                 가입 시 등록한 이름과 이메일 주소를 입력해 주시면 아이디를 조회해 드립니다.
             </p>
 
@@ -64,19 +65,19 @@ function GetId() {
             </form>
 
             {foundId && (
-                <div className="mt-5 p-4 rounded-2xl bg-[#f8f9fa] border border-[#e9ecef] text-center font-bold text-[#ff7a00]">
+                <div className="getid-result">
                     {foundId}
                 </div>
             )}
 
             {errorMessage && (
-                <div className="mt-5 p-4 rounded-2xl bg-[#fdecec] border border-[#f5c2c0] text-center font-medium text-[#d9534f]">
+                <div className="getid-error">
                     {errorMessage}
                 </div>
             )}
 
-            <div className="flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px]">
-                <Link to="/user/login" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
+            <div className="user-form-links">
+                <Link to="/user/login" className="user-form-link">
                     로그인
                 </Link>
             </div>

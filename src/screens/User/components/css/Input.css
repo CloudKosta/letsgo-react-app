@@ -1,0 +1,13 @@
+@reference "../../../../index.css";
+
+.input-wrapper {
+    @apply mb-4;
+}
+
+.input-label {
+    @apply block text-[13px] font-bold text-[#534537] mb-1.5;
+}
+
+.input-field {
+    @apply w-full h-[50px] bg-[#f8f9fa] border border-[#e9ecef] rounded-2xl px-4 text-[15px] outline-none transition-all duration-300 focus:border-blue-600 focus:bg-white focus:ring-[3px] focus:ring-blue-600/10;
+}

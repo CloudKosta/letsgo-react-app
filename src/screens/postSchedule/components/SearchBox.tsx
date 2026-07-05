@@ -1,5 +1,5 @@
 import { Search, X } from "lucide-react";
-import "./SearchBox.css";
+import "./css/SearchBox.css";
 
 interface SearchBoxProps {
     value: string;
@@ -24,12 +24,12 @@ function SearchBox({ value, onChange, onSearch, placeholder = '장소명-게시�
 
 
     return (
-        <div className= "box">
-            <div className= "field">
-                <Search className= "searchIcon" />
+        <div className="post-search-box">
+            <div className="post-search-field">
+                <Search className="post-search-icon" />
                 <input
                     type="text"
-                    className= "input"
+                    className="post-search-input"
                     value={value}
                     placeholder={placeholder}
                     onChange={(e) => onChange(e.target.value)}
@@ -37,15 +37,15 @@ function SearchBox({ value, onChange, onSearch, placeholder = '장소명-게시�
                 />
                 {value && (
                     <button
-                        className= "clearBtn"
+                        className="post-search-clear-btn"
                         aria-label="검색어 지우기"
                         onClick={handleClear}
                     >
-                        <X className= "clearIcon" />
+                        <X className="post-search-clear-icon" />
                     </button>
                 )}
             </div>
-            <button className= "submitBtn" onClick={submit}>
+            <button className="post-search-submit-btn" onClick={submit}>
                 검색
             </button>
         </div>

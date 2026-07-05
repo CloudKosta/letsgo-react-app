@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Input from "./components/Input";
 import Button from "./components/Button";
 import { updatePassword } from "../../api/userApi";
+import "./UpdatePw.css";
 
 function UpdatePw() {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ function UpdatePw() {
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (
@@ -42,9 +43,9 @@ function UpdatePw() {
     };
 
     return (
-        <div className="flex flex-col justify-center w-full max-w-[390px] mx-auto px-6 py-[30px] bg-white box-border">
-            <div className="text-center mb-8">
-                <h2 className="text-2xl font-extrabold text-[#222222]">비밀번호 찾기</h2>
+        <div className="user-form-container">
+            <div className="user-form-header">
+                <h2 className="user-form-title">비밀번호 찾기</h2>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -86,8 +87,8 @@ function UpdatePw() {
                 <Button text={loading ? "변경 중..." : "비밀번호 변경"} type="submit" disabled={loading} />
             </form>
 
-            <div className="flex flex-wrap justify-center gap-x-3.5 gap-y-1.5 mt-5 text-[13px]">
-                <Link to="/user/login" className="text-[#868e96] font-medium hover:text-[#ff7a00]">
+            <div className="user-form-links">
+                <Link to="/user/login" className="user-form-link">
                     로그인
                 </Link>
             </div>
