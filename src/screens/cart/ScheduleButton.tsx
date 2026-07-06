@@ -22,16 +22,8 @@ export default function ScheduleButton() {
             return;
         }
 
-        const title = window.prompt('새 일정의 제목을 입력해주세요:', '여행가기');
-        if (title === null) {
-            return;
-        }
-
+        const title = '여행가기';
         const trimmedTitle = title.trim();
-        if (!trimmedTitle) {
-            toast.error('일정 제목을 입력해야 합니다.');
-            return;
-        }
 
         try {
             const uniqueId = `SCH-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
