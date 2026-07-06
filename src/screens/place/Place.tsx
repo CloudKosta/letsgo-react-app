@@ -3,7 +3,6 @@ import { api } from "../../api/axiosInstance";
 import SearchInput from "./SearchInput";
 import LookupTable from "./LookupTable";
 import PlaceBox from "./PlaceBox";
-import { fetchPlacePage } from "../../api/placeApi";
 import type { PlaceDTO, TabType } from "./interface";
 import "./Place.css";
 
@@ -143,15 +142,15 @@ export default function Place() {
 
     return (
         <div className="place-container">
-            <SearchInput keyword={keyword} setKeyword={handleKeywordChange} />
+            <SearchInput keyword={keyword} setKeyword={setKeyword} />
 
             <LookupTable
                 currentTab={currentTab}
-                setCurrentTab={handleTabChange}
+                setCurrentTab={setCurrentTab}
                 selectedMajor={selectedMajor}
-                setSelectedMajor={handleMajorChange}
+                setSelectedMajor={setSelectedMajor}
                 selectedSub={selectedSub}
-                setSelectedSub={handleSubChange}
+                setSelectedSub={setSelectedSub}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
