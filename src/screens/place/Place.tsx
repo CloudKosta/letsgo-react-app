@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { api } from "../../api/axiosInstance";
 import SearchInput from "./SearchInput";
 import LookupTable from "./LookupTable";
 import PlaceBox from "./PlaceBox";
@@ -53,33 +54,26 @@ export default function Place() {
     const [selectedMajor, setSelectedMajor] = useState('');
     const [selectedSub, setSelectedSub] = useState('');
 
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const loaderRef = useRef<HTMLDivElement | null>(null);
 
-    const handleTabChange = (tab: TabType) => {
-        setCurrentTab(tab);
-        setPage(1);
-    };
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const observerRef = useRef<HTMLDivElement | null>(null);
 
-    const handleMajorChange = (major: string) => {
-        setSelectedMajor(major);
-        setPage(1);
-    };
-
-    const handleSubChange = (sub: string) => {
-        setSelectedSub(sub);
-        setPage(1);
-    };
-
-    const handleKeywordChange = (value: string) => {
-        setKeyword(value);
-        setPage(1);
-    };
 
     useEffect(() => {
-        let ignore = false;
+        setPlaces([]);
+        setPage(1);
+        setHasMore(true);
+    }, [currentTab, selectedMajor, selectedSub, keyword]);
+
+    useEffect(() => {
+        let endpoint = "/list/leisure";
+        if (currentTab === 'STAY') {
+            endpoint = "/list/stay";
+        } else if (currentTab === 'RESTAURANT') {
+            endpoint = "/list/restaurant";
+        }
 
         let categoryCode: string | null = null;
         if (selectedSub) {
@@ -88,42 +82,64 @@ export default function Place() {
             categoryCode = MAJOR_CODE_MAP[selectedMajor] || null;
         }
 
-        setLoading(true);
-        fetchPlacePage(currentTab, { category: categoryCode, keyword, page })
+        if (!hasMore || isLoading) return;
+        setIsLoading(true);
+
+        api.get(endpoint, {
+            params: {
+                category: categoryCode,
+                keyword: keyword || null,
+                page: page,
+                sortOrder: currentTab === 'LEISURE' ? 'distance' : 'name'
+            }
+        })
             .then(response => {
-                if (ignore) return;
-                setPlaces(prev => (page === 1 ? response.content : [...prev, ...response.content]));
-                setTotalPages(response.totalPages);
+                const newPlaces = response.data.content || [];
+                const currentPage = response.data.page;
+                const totalPages = response.data.totalPages;
+
+                setPlaces(prev => {
+                    if (page === 1) {
+                        return newPlaces;
+                    }
+                    const existingIds = new Set(prev.map(p => p.placeId));
+                    const filteredNew = newPlaces.filter((p: PlaceDTO) => !existingIds.has(p.placeId));
+                    return [...prev, ...filteredNew];
+                });
+
+                setHasMore(currentPage < totalPages);
             })
             .catch(error => {
                 console.error("플레이스 없음:", error);
-                if (!ignore && page === 1) {
-                    setPlaces([]);
-                    setTotalPages(1);
-                }
+                setHasMore(false);
             })
             .finally(() => {
-                if (!ignore) setLoading(false);
+                setIsLoading(false);
             });
 
-        return () => {
-            ignore = true;
-        };
     }, [currentTab, selectedMajor, selectedSub, keyword, page]);
 
     useEffect(() => {
-        const el = loaderRef.current;
-        if (!el) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && hasMore && !isLoading) {
+                    setPage(prev => prev + 1);
+                }
+            },
+            { threshold: 0.1 }
+        );
 
-        const observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting && !loading && page < totalPages) {
-                setPage(prev => prev + 1);
+        const currentObserver = observerRef.current;
+        if (currentObserver) {
+            observer.observe(currentObserver);
+        }
+
+        return () => {
+            if (currentObserver) {
+                observer.unobserve(currentObserver);
             }
-        });
-        observer.observe(el);
-
-        return () => observer.disconnect();
-    }, [loading, page, totalPages]);
+        };
+    }, [hasMore, isLoading]);
 
     return (
         <div className="place-container">
@@ -144,7 +160,11 @@ export default function Place() {
                 ))}
             </div>
 
-            <div ref={loaderRef} className="h-10" />
+            {hasMore && (
+                <div ref={observerRef} className="h-16 flex items-center justify-center text-gray-400 text-sm font-medium">
+                    {isLoading ? "불러오는 중..." : "더 불러오기"}
+                </div>
+            )}
         </div>
     );
 }

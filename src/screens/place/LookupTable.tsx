@@ -1,5 +1,6 @@
 import { Compass, Hotel, Utensils } from "lucide-react";
 import type { TabType, LookupTableProps } from "./interface";
+import { useDragScroll } from "../../hooks/useDragScroll";
 import "./LookupTable.css";
 
 const CATEGORY_MAP = {
@@ -29,6 +30,8 @@ export default function LookupTable({
     selectedSub,
     setSelectedSub
 }: LookupTableProps) {
+    const majorDrag = useDragScroll();
+    const subDrag = useDragScroll();
 
     const handleTabChange = (tab: TabType) => {
         setCurrentTab(tab);
@@ -78,7 +81,12 @@ export default function LookupTable({
 
             <div className="lookup-section">
                 <div className="lookup-section-title">중분류</div>
-                <div className="lookup-button-group">
+                <div
+                    className="lookup-button-group"
+                    ref={majorDrag.ref}
+                    onMouseDown={majorDrag.onMouseDown}
+                    style={majorDrag.style}
+                >
                     <button
                         className={`lookup-btn ${selectedMajor === '' ? 'active' : ''}`}
                         onClick={() => handleMajorSelect('')}
@@ -102,7 +110,12 @@ export default function LookupTable({
                 <div className="lookup-section-sub-inner">
                     <div className="lookup-section">
                         <div className="lookup-section-title">소분류</div>
-                        <div className="lookup-button-group">
+                        <div
+                            className="lookup-button-group"
+                            ref={subDrag.ref}
+                            onMouseDown={subDrag.onMouseDown}
+                            style={subDrag.style}
+                        >
                             <button
                                 className={`lookup-btn ${selectedSub === '' ? 'active' : ''}`}
                                 onClick={() => setSelectedSub('')}

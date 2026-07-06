@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calendar, User } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { useMySchedule } from './hooks/useMySchedule';
 import ScheduleTab from './components/ScheduleTab';
 import type { TabType } from './components/ScheduleTab';

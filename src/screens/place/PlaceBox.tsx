@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, MapPin, SquarePlus, ImageOff } from "lucide-react";
+import { useCartStore } from '../../store/cartStore';
+import { useAuthStore } from "../../store/authStore";
+import { toast } from "../../store/toastStore";
 import type { PlaceDTO } from "./interface";
-import axios from "axios"
+import { api } from "../../api/axiosInstance";
 import "./PlaceBox.css";
 
 interface PlaceBoxProps {
@@ -9,16 +13,25 @@ interface PlaceBoxProps {
 }
 
 export default function PlaceBox({ place }: PlaceBoxProps) {
+    const navigate = useNavigate();
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const [imageError, setImageError] = useState(false);
     const [likeCount, setLikeCount] = useState(place.likeCount || 0);
+    const addToCart = useCartStore((state) => state.addToCart);
+
 
     const handleLikeClick = async () => {
+        if (!isLoggedIn) {
+            toast.error("로그인이 필요한 서비스입니다.");
+            navigate("/user/login");
+            return;
+        }
         try {
             const params = new URLSearchParams();
             params.append("placeId", place.placeId.toString());
             params.append("placeType", place.placeType.toString());
 
-            const response = await axios.post("http://127.0.0.1:5531/placeLikeAjax", params);
+            const response = await api.post("/placeLikeAjax", params);
             if (response.data && response.data.result === "success") {
                 setLikeCount(response.data.likeCount);
             }
@@ -61,10 +74,16 @@ export default function PlaceBox({ place }: PlaceBoxProps) {
                     {place.title}
                 </h3>
 
-                <button className="place-box-add-button">
+                <button
+                    className="place-box-add-button"
+                    onClick={() => {
+                        addToCart(place);
+                    }}
+                >
                     <SquarePlus className="place-box-add-icon" />
                     담기
                 </button>
+
             </div>
         </div>
     );
