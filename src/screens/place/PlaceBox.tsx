@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Heart, MapPin, SquarePlus, ImageOff } from "lucide-react";
 import { useCartStore } from '../../store/cartStore';
+import { useAuthStore } from "../../store/authStore";
+import { toast } from "../../store/toastStore";
 import type { PlaceDTO } from "./interface";
 import { api } from "../../api/axiosInstance";
 import "./PlaceBox.css";
@@ -10,12 +13,19 @@ interface PlaceBoxProps {
 }
 
 export default function PlaceBox({ place }: PlaceBoxProps) {
+    const navigate = useNavigate();
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
     const [imageError, setImageError] = useState(false);
     const [likeCount, setLikeCount] = useState(place.likeCount || 0);
     const addToCart = useCartStore((state) => state.addToCart);
 
 
     const handleLikeClick = async () => {
+        if (!isLoggedIn) {
+            toast.error("로그인이 필요한 서비스입니다.");
+            navigate("/user/login");
+            return;
+        }
         try {
             const params = new URLSearchParams();
             params.append("placeId", place.placeId.toString());
