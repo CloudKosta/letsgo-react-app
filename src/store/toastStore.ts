@@ -9,13 +9,13 @@ export interface Toast {
 }
 
 interface ToastState {
-  // Single Toast system (for cartStore, etc.)
+
   isOpen: boolean;
   message: string;
   showToast: (message: string) => void;
   hideToast: () => void;
 
-  // Multi-Toast system (for MyScheduleDetail, ShareTab, etc.)
+
   toasts: Toast[];
   show: (type: ToastType, message: string) => void;
   dismiss: (id: number) => void;
@@ -28,7 +28,7 @@ export const useToastStore = create<ToastState>((set, get) => {
   let singleTimeoutId: any = null;
 
   return {
-    // Single Toast system implementation
+
     isOpen: false,
     message: "",
     showToast: (message) => {
@@ -40,7 +40,7 @@ export const useToastStore = create<ToastState>((set, get) => {
     },
     hideToast: () => set({ isOpen: false, message: "" }),
 
-    // Multi-Toast system implementation
+
     toasts: [],
     show: (type, message) => {
       const id = ++seq;

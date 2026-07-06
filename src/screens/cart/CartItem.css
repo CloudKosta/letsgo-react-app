@@ -28,9 +28,8 @@
     @apply inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full;
 }
 
-/* 카테고리별 뱃지 스타일 */
 .cart-item-category-badge.leisure {
-    @apply bg-orange-50 text-orange-600 border border-orange-100;
+    @apply bg-blue-50 text-blue-600 border border-blue-100;
 }
 
 .cart-item-category-badge.stay {

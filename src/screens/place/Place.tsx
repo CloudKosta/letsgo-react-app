@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { api } from "../../api/axiosInstance";
 import SearchInput from "./SearchInput";
 import LookupTable from "./LookupTable";
@@ -53,14 +53,26 @@ export default function Place() {
     const [selectedMajor, setSelectedMajor] = useState('');
     const [selectedSub, setSelectedSub] = useState('');
 
-    useEffect(() => {
-        let endpoint = "/leisureListAjax";
-        if (currentTab === 'STAY') {
-            endpoint = "/stayListAjax";
-        } else if (currentTab === 'RESTAURANT') {
-            endpoint = "/restaurantListAjax";
-        }
 
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const observerRef = useRef<HTMLDivElement | null>(null);
+
+
+    useEffect(() => {
+        setPlaces([]);
+        setPage(1);
+        setHasMore(true);
+    }, [currentTab, selectedMajor, selectedSub, keyword]);
+
+    useEffect(() => {
+        let endpoint = "/list/leisure";
+        if (currentTab === 'STAY') {
+            endpoint = "/list/stay";
+        } else if (currentTab === 'RESTAURANT') {
+            endpoint = "/list/restaurant";
+        }
 
         let categoryCode: string | null = null;
         if (selectedSub) {
@@ -69,21 +81,64 @@ export default function Place() {
             categoryCode = MAJOR_CODE_MAP[selectedMajor] || null;
         }
 
+        if (!hasMore || isLoading) return;
+        setIsLoading(true);
+
         api.get(endpoint, {
             params: {
                 category: categoryCode,
                 keyword: keyword || null,
+                page: page,
+                sortOrder: currentTab === 'LEISURE' ? 'distance' : 'name'
             }
         })
             .then(response => {
-                setPlaces(response.data);
+                const newPlaces = response.data.content || [];
+                const currentPage = response.data.page;
+                const totalPages = response.data.totalPages;
+
+                setPlaces(prev => {
+                    if (page === 1) {
+                        return newPlaces;
+                    }
+                    const existingIds = new Set(prev.map(p => p.placeId));
+                    const filteredNew = newPlaces.filter((p: PlaceDTO) => !existingIds.has(p.placeId));
+                    return [...prev, ...filteredNew];
+                });
+
+                setHasMore(currentPage < totalPages);
             })
             .catch(error => {
                 console.error("플레이스 없음:", error);
-                setPlaces([]);
+                setHasMore(false);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
 
-    }, [currentTab, selectedMajor, selectedSub, keyword]);
+    }, [currentTab, selectedMajor, selectedSub, keyword, page]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && hasMore && !isLoading) {
+                    setPage(prev => prev + 1);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        const currentObserver = observerRef.current;
+        if (currentObserver) {
+            observer.observe(currentObserver);
+        }
+
+        return () => {
+            if (currentObserver) {
+                observer.unobserve(currentObserver);
+            }
+        };
+    }, [hasMore, isLoading]);
 
     return (
         <div className="place-container">
@@ -103,6 +158,12 @@ export default function Place() {
                     <PlaceBox key={place.placeId} place={place} />
                 ))}
             </div>
+
+            {hasMore && (
+                <div ref={observerRef} className="h-16 flex items-center justify-center text-gray-400 text-sm font-medium">
+                    {isLoading ? "불러오는 중..." : "더 불러오기"}
+                </div>
+            )}
         </div>
     );
 }
