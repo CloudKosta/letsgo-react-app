@@ -11,6 +11,7 @@ import {
   deletePostSchedule,
   reportPostSchedule,
 } from "../../api/postScheduleApi";
+import { toast } from "../../store/toastStore";
 import { usePostScheduleDetail } from "./hooks/usePostScheduleDetail";
 import "./PostScheduleDetailApp.css";
 
@@ -20,19 +21,38 @@ export default function PostScheduleDetailApp() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<PostScheduleDetailTabType>("schedule");
   const [actionLoading, setActionLoading] = useState<"report" | "copy" | "delete" | null>(null);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("");
 
-  const handleReport = async () => {
+  const openReportModal = () => {
+    if (!detail || actionLoading) return;
+    setReportReason("");
+    setIsReportModalOpen(true);
+  };
+
+  const closeReportModal = () => {
+    if (actionLoading) return;
+    setIsReportModalOpen(false);
+    setReportReason("");
+  };
+
+  const handleReportSubmit = async () => {
     if (!detail || actionLoading) return;
 
-    const reason = window.prompt("신고 사유를 입력해주세요.");
-    if (!reason?.trim()) return;
+    const trimmedReason = reportReason.trim();
+    if (!trimmedReason) {
+      toast.error("신고 사유를 입력해주세요.");
+      return;
+    }
 
     setActionLoading("report");
     try {
-      await reportPostSchedule(detail.postId, reason.trim());
-      alert("신고가 접수되었습니다.");
+      await reportPostSchedule(detail.postId, trimmedReason);
+      toast.success("신고가 접수되었습니다.");
+      setIsReportModalOpen(false);
+      setReportReason("");
     } catch {
-      alert("신고 처리에 실패했습니다.");
+      toast.error("신고 처리에 실패했습니다.");
     } finally {
       setActionLoading(null);
     }
@@ -44,9 +64,9 @@ export default function PostScheduleDetailApp() {
     setActionLoading("copy");
     try {
       await copyPostScheduleToMySchedule(detail.postId);
-      alert("내 일정에 추가되었습니다.");
+      toast.success("내 일정에 추가되었습니다.");
     } catch {
-      alert("내 일정에 추가하지 못했습니다.");
+      toast.error("내 일정에 추가하지 못했습니다.");
     } finally {
       setActionLoading(null);
     }
@@ -59,10 +79,10 @@ export default function PostScheduleDetailApp() {
     setActionLoading("delete");
     try {
       await deletePostSchedule(detail.postId);
-      alert("게시물이 삭제되었습니다.");
+      toast.success("게시물이 삭제되었습니다.");
       navigate("/postSchedule");
     } catch {
-      alert("게시물을 삭제하지 못했습니다.");
+      toast.error("게시물을 삭제하지 못했습니다.");
     } finally {
       setActionLoading(null);
     }
@@ -110,7 +130,7 @@ export default function PostScheduleDetailApp() {
           <button
             type="button"
             className="post-schedule-detail-action-btn post-schedule-detail-report-btn"
-            onClick={handleReport}
+            onClick={openReportModal}
             disabled={actionLoading !== null}
           >
             신고하기
@@ -141,6 +161,54 @@ export default function PostScheduleDetailApp() {
           )}
         </div>
       </main>
+
+      {isReportModalOpen && (
+        <div
+          className="post-schedule-report-modal-backdrop"
+          onClick={closeReportModal}
+        >
+          <div
+            className="post-schedule-report-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="post-schedule-report-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2
+              id="post-schedule-report-title"
+              className="post-schedule-report-modal-title"
+            >
+              신고 사유
+            </h2>
+            <textarea
+              className="post-schedule-report-modal-textarea"
+              value={reportReason}
+              onChange={(event) => setReportReason(event.target.value)}
+              placeholder="신고 사유를 입력해주세요."
+              rows={4}
+              autoFocus
+            />
+            <div className="post-schedule-report-modal-actions">
+              <button
+                type="button"
+                className="post-schedule-report-modal-cancel-btn"
+                onClick={closeReportModal}
+                disabled={actionLoading !== null}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="post-schedule-report-modal-submit-btn"
+                onClick={handleReportSubmit}
+                disabled={actionLoading !== null}
+              >
+                신고하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

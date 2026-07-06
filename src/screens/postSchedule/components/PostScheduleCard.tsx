@@ -2,6 +2,7 @@ import { useState, type MouseEvent } from "react";
 import { Eye, Heart, MapPin, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { plusPostScheduleLike } from "../../../api/postScheduleApi";
+import { toast } from "../../../store/toastStore";
 import type { PostSchedule } from "../../../types";
 import "./css/PostScheduleCard.css";
 
@@ -26,7 +27,7 @@ function PostScheduleCard({ post }: PostScheduleCardProps) {
             const nextLikeCount = await plusPostScheduleLike(post.postId);
             setLikeState({ postId: post.postId, count: nextLikeCount });
         } catch {
-            alert("좋아요 처리에 실패했습니다.");
+            toast.error("좋아요 처리에 실패했습니다.");
         } finally {
             setIsLiking(false);
         }

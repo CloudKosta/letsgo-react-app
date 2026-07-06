@@ -51,3 +51,36 @@
 .post-schedule-detail-not-found {
   @apply flex items-center justify-center py-16 text-sm text-gray-400;
 }
+
+.post-schedule-report-modal-backdrop {
+  @apply fixed inset-0 z-50 bg-black/40 px-5 flex items-center justify-center;
+}
+
+.post-schedule-report-modal {
+  @apply w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl flex flex-col gap-4;
+}
+
+.post-schedule-report-modal-title {
+  @apply text-lg font-bold text-gray-900;
+}
+
+.post-schedule-report-modal-textarea {
+  @apply w-full resize-none rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-900 outline-none focus:border-blue-500 focus:bg-white;
+}
+
+.post-schedule-report-modal-actions {
+  @apply flex items-center gap-2;
+}
+
+.post-schedule-report-modal-cancel-btn,
+.post-schedule-report-modal-submit-btn {
+  @apply flex-1 h-10 rounded-xl border text-sm font-semibold cursor-pointer transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+.post-schedule-report-modal-cancel-btn {
+  @apply border-gray-200 bg-white text-gray-600 hover:bg-gray-50;
+}
+
+.post-schedule-report-modal-submit-btn {
+  @apply border-blue-600 bg-blue-600 text-white hover:bg-blue-700;
+}
