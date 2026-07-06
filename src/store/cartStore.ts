@@ -31,6 +31,14 @@ export const useCartStore = create<CartState>()(
                         }
                     }
 
+                    if (place.placeType === 'STAY') {
+                        const hasStay = state.cartItems.some((item) => item.placeType === 'STAY');
+                        if (hasStay) {
+                            useToastStore.getState().showToast('숙소는 장바구니에 하나만 담을 수 있습니다.');
+                            return { cartItems: state.cartItems };
+                        }
+                    }
+
                     useToastStore.getState().showToast(`${place.title}을(를) 장바구니에 담았습니다.`);
                     return { cartItems: [...state.cartItems, place] };
                 }),
