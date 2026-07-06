@@ -88,21 +88,9 @@ export default function PostScheduleDetailApp() {
     }
   };
 
-  if (loading) {
-    return <div className="post-schedule-detail-not-found">로딩중...</div>;
-  }
-
-  if (error) {
-    return <div className="post-schedule-detail-not-found">{error}</div>;
-  }
-
-  if (!detail) {
-    return <div className="post-schedule-detail-not-found">게시물을 찾을 수 없습니다.</div>;
-  }
-
   return (
     <div className="post-schedule-detail-page">
-      <header className="post-schedule-detail-header">
+      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 px-4 flex items-center justify-between z-50">
         <button
           type="button"
           className="post-schedule-detail-back-btn"
@@ -111,8 +99,8 @@ export default function PostScheduleDetailApp() {
         >
           <ArrowLeft size={24} />
         </button>
-        <h1 className="post-schedule-detail-title">{detail.scheduleTitle}</h1>
-        {detail.owner && (
+        <h1 className="post-schedule-detail-title">{detail?.scheduleTitle ?? ""}</h1>
+        {detail?.owner && (
           <button
             type="button"
             className="post-schedule-detail-delete-btn"
@@ -126,40 +114,52 @@ export default function PostScheduleDetailApp() {
       </header>
 
       <main className="post-schedule-detail-content">
-        <div className="post-schedule-detail-action-row">
-          <button
-            type="button"
-            className="post-schedule-detail-action-btn post-schedule-detail-report-btn"
-            onClick={openReportModal}
-            disabled={actionLoading !== null}
-          >
-            신고하기
-          </button>
-          <button
-            type="button"
-            className="post-schedule-detail-action-btn post-schedule-detail-copy-btn"
-            onClick={handleCopy}
-            disabled={actionLoading !== null}
-          >
-            내 일정에 추가
-          </button>
-        </div>
+        {loading && <div className="post-schedule-detail-not-found">로딩중...</div>}
 
-        <PostScheduleDetailTab activeTab={activeTab} onTabChange={setActiveTab} />
+        {!loading && error && <div className="post-schedule-detail-not-found">{error}</div>}
 
-        <div className="post-schedule-detail-tab-content">
-          {activeTab === "schedule" && (
-            <PostScheduleSchedulePanel maps={detail.maps} routes={detail.routes} />
-          )}
+        {!loading && !error && !detail && (
+          <div className="post-schedule-detail-not-found">게시물을 찾을 수 없습니다.</div>
+        )}
 
-          {activeTab === "budget" && (
-            <PostScheduleBudget budgetDetail={detail.budgetDetail} />
-          )}
+        {!loading && !error && detail && (
+          <>
+            <div className="post-schedule-detail-action-row">
+              <button
+                type="button"
+                className="post-schedule-detail-action-btn post-schedule-detail-report-btn"
+                onClick={openReportModal}
+                disabled={actionLoading !== null}
+              >
+                신고하기
+              </button>
+              <button
+                type="button"
+                className="post-schedule-detail-action-btn post-schedule-detail-copy-btn"
+                onClick={handleCopy}
+                disabled={actionLoading !== null}
+              >
+                내 일정에 추가
+              </button>
+            </div>
 
-          {activeTab === "todo" && (
-            <PostScheduleTodo todoDetail={detail.todoDetail} />
-          )}
-        </div>
+            <PostScheduleDetailTab activeTab={activeTab} onTabChange={setActiveTab} />
+
+            <div className="post-schedule-detail-tab-content">
+              {activeTab === "schedule" && (
+                <PostScheduleSchedulePanel maps={detail.maps} routes={detail.routes} />
+              )}
+
+              {activeTab === "budget" && (
+                <PostScheduleBudget budgetDetail={detail.budgetDetail} />
+              )}
+
+              {activeTab === "todo" && (
+                <PostScheduleTodo todoDetail={detail.todoDetail} />
+              )}
+            </div>
+          </>
+        )}
       </main>
 
       {isReportModalOpen && (
