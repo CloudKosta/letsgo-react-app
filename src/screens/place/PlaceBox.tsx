@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Heart, MapPin, SquarePlus, ImageOff } from "lucide-react";
+import { useCartStore } from '../../store/cartStore';
 import type { PlaceDTO } from "./interface";
 import axios from "axios"
 import "./PlaceBox.css";
@@ -11,6 +12,8 @@ interface PlaceBoxProps {
 export default function PlaceBox({ place }: PlaceBoxProps) {
     const [imageError, setImageError] = useState(false);
     const [likeCount, setLikeCount] = useState(place.likeCount || 0);
+    const addToCart = useCartStore((state) => state.addToCart);
+
 
     const handleLikeClick = async () => {
         try {
@@ -61,10 +64,16 @@ export default function PlaceBox({ place }: PlaceBoxProps) {
                     {place.title}
                 </h3>
 
-                <button className="place-box-add-button">
+                <button
+                    className="place-box-add-button"
+                    onClick={() => {
+                        addToCart(place);
+                    }}
+                >
                     <SquarePlus className="place-box-add-icon" />
                     담기
                 </button>
+
             </div>
         </div>
     );
