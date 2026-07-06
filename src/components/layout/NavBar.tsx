@@ -24,12 +24,12 @@ function Navbar() {
                     key={path}
                     to={path}
                     className={({ isActive }) =>
-                        `flex flex-col items-center justify-center gap-1 text-xs ${isActive ? 'text-black' : 'text-gray-400'
+                        `flex h-full flex-1 min-w-0 flex-col items-center justify-center gap-1 text-center text-xs ${isActive ? 'text-black' : 'text-gray-400'
                         }`
                     }
                 >
-                    <Icon className="w-6 h-6" />
-                    <span>{label}</span>
+                    <Icon className="h-6 w-6 shrink-0" />
+                    <span className="w-full whitespace-normal break-keep leading-tight">{label}</span>
                 </NavLink>
             ))}
         </nav>

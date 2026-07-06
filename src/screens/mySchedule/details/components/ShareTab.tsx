@@ -92,7 +92,7 @@ function ShareTab({ myScheduleId, isOwner = false }: ShareTabProps) {
                             type="button"
                             onClick={handleAdd}
                             disabled={submitting}
-                            className="px-4 rounded-xl bg-[#ff7a00] text-white text-sm font-bold disabled:opacity-60"
+                            className={styles.addBtn}
                         >
                             {submitting ? '추가 중...' : '추가'}
                         </button>
