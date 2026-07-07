@@ -8,6 +8,7 @@ import { sortOptions } from './components/SortDropdown';
 import type { SortOption } from './components/SortDropdown';
 import ScheduleCard from './components/ScheduleCard';
 import SearchBox from './details/components/SearchBox';
+import Footer from '../../components/layout/Footer';
 import styles from './MyScheduleList.module.css';
 
 function MyScheduleList() {
@@ -34,7 +35,7 @@ function MyScheduleList() {
     return (
         <div className={styles.page}>
             <div className={styles.titleBar}>
-                <h1 className={styles.title}>내 일정목록</h1>
+            
             </div>
 
             <ScheduleTab activeTab={activeTab} onTabChange={setActiveTab} />
@@ -45,7 +46,6 @@ function MyScheduleList() {
                         value={keyword}
                         onChange={setKeyword}
                         onSearch={setSubmittedQuery}
-                        placeholder="일정 이름으로 검색"
                     />
                 </div>
                 <SortDropdown activeSort={activeSort} onSortChange={setActiveSort} />
@@ -74,6 +74,8 @@ function MyScheduleList() {
                         <p className={styles.emptyText}>일정이 없습니다</p>
                     </div>
                 )}
+
+                <Footer />
             </div>
         </div>
     );
