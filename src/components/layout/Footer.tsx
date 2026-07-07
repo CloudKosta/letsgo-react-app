@@ -15,12 +15,17 @@ function Footer() {
                 <div className="flex items-center gap-2">
                     <span className="font-semibold text-gray-500">개발 팀</span>
                     <span className="text-gray-300">|</span>
-                    <span>Team LetsGo</span>
+                    <span>Team Cloud</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="font-semibold text-gray-500">프로젝트</span>
                     <span className="text-gray-300">|</span>
-                    <span>KOSTA 2026</span>
+                    <span>KOSTA 2026 Let's GO!</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="font-semibold text-gray-500">팀원</span>
+                    <span className="text-gray-300">|</span>
+                    <span>한상민, 고문성, 강신회, 김세은</span>
                 </div>
 
             </div>
