@@ -3,6 +3,7 @@ import { api } from "../../api/axiosInstance";
 import SearchInput from "./SearchInput";
 import LookupTable from "./LookupTable";
 import PlaceBox from "./PlaceBox";
+import Footer from "../../components/layout/Footer";
 import type { PlaceDTO, TabType } from "./interface";
 import "./Place.css";
 
@@ -184,6 +185,8 @@ export default function Place() {
                     {isLoading ? "불러오는 중..." : "더 불러오기"}
                 </div>
             )}
+            
+            <Footer />
         </div>
     );
 }
