@@ -44,36 +44,35 @@ function UpdatePw() {
 
     return (
         <div className="user-form-container">
-
             <form onSubmit={handleSubmit}>
                 <Input
-                    label="아이디"
                     id="userIdInput"
                     name="userID"
+                    placeholder="아이디"
                     value={userID}
                     onChange={(e) => setUserID(e.target.value)}
                 />
                 <Input
-                    label="이메일"
                     id="emailInput"
                     name="email"
                     type="email"
+                    placeholder="이메일"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
-                    label="새 비밀번호"
                     id="newPasswordInput"
                     name="password"
                     type="password"
+                    placeholder="새비밀번호"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Input
-                    label="새 비밀번호 확인"
                     id="newPasswordConfirmInput"
                     name="passwordConfirm"
                     type="password"
+                    placeholder="새비밀번호 확인"
                     value={passwordConfirm}
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                 />
