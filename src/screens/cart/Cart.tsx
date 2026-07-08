@@ -18,7 +18,7 @@ export default function Cart() {
                     {cartItems.length === 0 ? (
 
                         <div className="text-gray-400 text-center py-12 text-sm">
-                            장바구니가 비어 있습니다.
+                            장소를 선택해주세요.
                         </div>
                     ) : (
 
