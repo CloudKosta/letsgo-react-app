@@ -41,17 +41,17 @@ function GetId() {
 
             <form onSubmit={handleSubmit}>
                 <Input
-                    label="이름"
                     id="nameInput"
                     name="name"
+                    placeholder="이름을 입력하세요"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
                 <Input
-                    label="이메일"
                     id="emailInput"
                     name="email"
                     type="email"
+                    placeholder="이메일을 입력하세요"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
