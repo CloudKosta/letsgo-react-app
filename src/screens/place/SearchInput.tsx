@@ -9,6 +9,7 @@ export default function SearchInput({ keyword, setKeyword }: SearchInputProps) {
                 <Search className="search-icon" />
                 <input
                     className="search-input"
+                    placeholder="장소, 키워드를 입력하세요."
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                 />
