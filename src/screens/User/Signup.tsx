@@ -48,40 +48,40 @@ function Signup() {
         <div className="signup-container">
             <form onSubmit={handleSubmit}>
                 <Input
-                    label="이름"
                     id="nameInput"
                     name="name"
+                    placeholder="이름"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
                 <Input
-                    label="아이디"
                     id="idInput"
                     name="userID"
+                    placeholder="아이디"
                     value={userID}
                     onChange={(e) => setUserID(e.target.value)}
                 />
                 <Input
-                    label="이메일"
                     id="emailInput"
                     name="email"
                     type="email"
+                    placeholder="이메일"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
-                    label="비밀번호"
                     id="pwInput"
                     name="password"
                     type="password"
+                    placeholder="비밀번호"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <Input
-                    label="비밀번호 확인"
                     id="pwConfirmInput"
                     name="passwordConfirm"
                     type="password"
+                    placeholder="비밀번호 확인"
                     value={passwordConfirm}
                     onChange={(e) => setPasswordConfirm(e.target.value)}
                 />

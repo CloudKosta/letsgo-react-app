@@ -54,10 +54,12 @@ export async function sendChat(sessionId: string, message: string): Promise<Chat
 export async function getChatLogs(
   sessionId: string,
   skip = 0,
-  limit = 20
+  limit = 20,
+  signal?: AbortSignal
 ): Promise<ChatLogList> {
   const res = await chatbotApi.get<ChatLogList>("/chat", {
     params: { session_id: sessionId, skip, limit },
+    signal,
   });
   return res.data;
 }

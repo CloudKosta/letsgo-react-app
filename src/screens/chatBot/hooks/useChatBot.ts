@@ -22,28 +22,32 @@ function toBubbles(log: ChatLog): Bubble[] {
 
 export function useChatBot() {
   const sessionRef = useRef(getSessionId());
+  const sendingRef = useRef(false);
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let ignore = false;
-    getChatLogs(sessionRef.current)
+    const controller = new AbortController();
+    getChatLogs(sessionRef.current, 0, 20, controller.signal)
       .then(({ logs }) => {
-        if (!ignore) setBubbles(logs.flatMap(toBubbles));
+        setBubbles(logs.flatMap(toBubbles));
       })
-      .catch(() => {
-        if (!ignore) setError("대화 이력을 불러오지 못했습니다.");
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          setError("대화 이력을 불러오지 못했습니다.");
+        }
       });
     return () => {
-      ignore = true;
+      controller.abort();
     };
   }, []);
 
   const send = useCallback(async (message: string) => {
     const text = message.trim();
-    if (!text || sending) return;
+    if (!text || sendingRef.current) return;
 
+    sendingRef.current = true;
     setError(null);
     setSending(true);
     setBubbles((prev) => [...prev, { key: `tmp-${Date.now()}`, role: "user", text }]);
@@ -54,9 +58,10 @@ export function useChatBot() {
       setError("메시지 전송에 실패했습니다.");
       setBubbles((prev) => prev.slice(0, -1));
     } finally {
+      sendingRef.current = false;
       setSending(false);
     }
-  }, [sending]);
+  }, []);
 
   const clear = useCallback(() => {
     sessionRef.current = resetSessionId();
