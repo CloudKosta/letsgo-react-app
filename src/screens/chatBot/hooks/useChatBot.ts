@@ -28,16 +28,18 @@ export function useChatBot() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let ignore = false;
-    getChatLogs(sessionRef.current)
+    const controller = new AbortController();
+    getChatLogs(sessionRef.current, 0, 20, controller.signal)
       .then(({ logs }) => {
-        if (!ignore) setBubbles(logs.flatMap(toBubbles));
+        setBubbles(logs.flatMap(toBubbles));
       })
-      .catch(() => {
-        if (!ignore) setError("대화 이력을 불러오지 못했습니다.");
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          setError("대화 이력을 불러오지 못했습니다.");
+        }
       });
     return () => {
-      ignore = true;
+      controller.abort();
     };
   }, []);
 
