@@ -22,6 +22,7 @@ function toBubbles(log: ChatLog): Bubble[] {
 
 export function useChatBot() {
   const sessionRef = useRef(getSessionId());
+  const sendingRef = useRef(false);
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,8 +43,9 @@ export function useChatBot() {
 
   const send = useCallback(async (message: string) => {
     const text = message.trim();
-    if (!text || sending) return;
+    if (!text || sendingRef.current) return;
 
+    sendingRef.current = true;
     setError(null);
     setSending(true);
     setBubbles((prev) => [...prev, { key: `tmp-${Date.now()}`, role: "user", text }]);
@@ -54,9 +56,10 @@ export function useChatBot() {
       setError("메시지 전송에 실패했습니다.");
       setBubbles((prev) => prev.slice(0, -1));
     } finally {
+      sendingRef.current = false;
       setSending(false);
     }
-  }, [sending]);
+  }, []);
 
   const clear = useCallback(() => {
     sessionRef.current = resetSessionId();
